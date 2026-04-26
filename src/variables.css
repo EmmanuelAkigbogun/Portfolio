@@ -1,0 +1,45 @@
+/* --- Global Reset & Variables --- */
+:root {
+  /* MASTER THEME SWITCH - Edit these to change the look */
+  --bg-main: #3d1b5d; /* Deep Purple (Change to #000000 for Black) */
+  --bg-sidebar: #2a1244; /* Darker Sidebar (Change to #0d0d0d for Black) */
+  --nav-bg: rgba(
+    61,
+    27,
+    93,
+    0.9
+  ); /* Glass Color (Change to rgba(0,0,0,0.9) for Black) */
+
+  --text-main: #ffffff;
+  --text-muted: #adadb0;
+  --accent-color: #f0e68c; /* Gold highlight from the image */
+
+  /* Component Colors */
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #3d1b5d; /* Change to #000000 for Black theme */
+  --border-color: rgba(255, 255, 255, 0.1);
+
+  /* Layout Constants */
+  --nav-height: 80px;
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:root {
+  /* MASTER THEME SWITCH - SET TO BLACK */
+  --bg-main: #000000; /* Pure Black */
+  --bg-sidebar: #0d0d0d; /* Deep Grey Sidebar */
+  --nav-bg: rgba(0, 0, 0, 0.9); /* Black Glass Effect */
+
+  --text-main: #ffffff;
+  --text-muted: #adadb0;
+  --accent-color: #635bff; /* Electric Purple accent (or keep gold if you prefer) */
+  --accent-color: #f0e68c;
+  /* Component Colors */
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #000000; /* Black text on white buttons */
+  --border-color: rgba(255, 255, 255, 0.1);
+
+  /* Layout Constants */
+  --nav-height: 80px;
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,106 @@
+/* --- Hero Section (Root Integrated) --- */
+.hero {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  /* Pointing to Root Background */
+  background: var(--bg-main); 
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+.hero-container {
+  z-index: 10;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 40px;
+  width: 100%;
+}
+
+.hero-title {
+  font-size: 5.5rem;
+  font-weight: 900;
+  letter-spacing: -4px;
+  line-height: 1;
+  margin-bottom: 30px;
+  /* Pointing to Root Text */
+  color: var(--text-main);
+}
+
+.hero-title span {
+  /* Using the Accent Gold for specific words */
+  color: var(--accent-color);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* CHUNKY, STYLED BUTTONS */
+.hero-actions {
+  display: flex;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.btn-hero-primary {
+  /* Primary Button follows Root Primary styles */
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  padding: 18px 40px;
+  border-radius: 14px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+.btn-hero-primary:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(255, 255, 255, 0.2);
+}
+
+.btn-hero-secondary {
+  background: transparent;
+  color: var(--text-main);
+  /* Uses Root Border color */
+  border: 3px solid var(--border-color);
+  padding: 18px 40px;
+  border-radius: 14px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-hero-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-main);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title { font-size: 3.5rem; letter-spacing: -2px; }
+  .hero-actions { 
+    flex-direction: column;
+    gap: 15px;
+  }
+  .btn-hero-primary, .btn-hero-secondary {
+    width: 100%;
+    text-align: center;
+  }
+}
