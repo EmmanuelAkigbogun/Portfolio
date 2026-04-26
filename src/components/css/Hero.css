@@ -1,7 +1,7 @@
 /* --- Hero Section (Root Integrated) --- */
 .hero {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   /* Pointing to Root Background */
   background: var(--bg-main); 
