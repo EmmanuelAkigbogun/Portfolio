@@ -65,13 +65,15 @@
   font-weight: 900;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+  transition: var(--transition);
+  /* Linked shadow to border color variable */
+  box-shadow: 0 10px 30px var(--border-color);
 }
 
 .btn-hero-primary:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(255, 255, 255, 0.2);
+  /* Hover glow uses the Gold accent from your root */
+  box-shadow: 0 20px 40px var(--accent-color);
 }
 
 .btn-hero-secondary {
@@ -84,11 +86,12 @@
   font-weight: 900;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .btn-hero-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
+  /* Subtle glass effect using border variable */
+  background: var(--border-color);
   border-color: var(--text-main);
 }
 
