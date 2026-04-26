@@ -68,13 +68,13 @@
   cursor: pointer;
   transition: var(--transition);
   /* Linked shadow to border color variable */
-  box-shadow: 0 10px 30px var(--border-color);
+  box-shadow: 0 5px 10px var(--border-color);
 }
 
 .btn-hero-primary:hover {
   transform: translateY(-5px) scale(1.02);
   /* Hover glow uses the Gold accent from your root */
-  box-shadow: 0 20px 40px var(--accent-color);
+  box-shadow: 0 5px 10px var(--accent-color);
 }
 
 .btn-hero-secondary {
