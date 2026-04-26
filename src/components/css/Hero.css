@@ -108,3 +108,11 @@
     text-align: center;
   }
 }
+
+/* Responsive */
+@media (max-width: 400px) {
+  .hero {
+    padding-top: 130px;
+  }
+}
+
