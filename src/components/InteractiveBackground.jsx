@@ -276,39 +276,54 @@ const InteractiveBackground = ({
 
     let isTouchDevice = false;
 
-    const handleTouchStart = (e) => {
-      isTouchDevice = true;
-      isHolding = true;
-      const rect = parent.getBoundingClientRect();
-      const t = e.touches[0];
-      mouse.x = t.clientX - rect.left;
-      mouse.y = t.clientY - rect.top;
-      mouse.visible = true;
-    };
+   
 
     const handleMouseMove = (e) => {
-      if (isTouchDevice) return; // ignore synthetic mouse events on mobile
-      const rect = parent.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-      mouse.visible = true;
+      console.log(e.type, e);
+
+      if (e.type === "mousemove") {
+        console.log("inua",e);
+
+        isTouchDevice = false;
+        isHolding = true;
+        // ignore synthetic mouse events on mobile
+        const rect = parent.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+        mouse.visible = true;
+      }
     };
 
-    const handleMouseLeave = () => {
-      if (isTouchDevice) return;
-      isHolding = false;
-      mouse.visible = false;
-      mouse.x = null;
-      mouse.y = null;
+    const handleMouseLeave = (e) => {
+      if (e.type.includes("mouse")) {
+        console.log(e,99);
+        
+        isTouchDevice = false;
+        isHolding = false;
+        mouse.visible = false;
+        mouse.x = null;
+        mouse.y = null;
+      }
     };
 
-    const handleTouchMove = (e) => {
-      if (!isHolding) return;
-      const rect = parent.getBoundingClientRect();
-      const t = e.touches[0];
-      mouse.x = t.clientX - rect.left;
-      mouse.y = t.clientY - rect.top;
-    };
+     const handleTouchStart = (e) => {
+       e.preventDefault();
+       isTouchDevice = true;
+       isHolding = true;
+       const rect = parent.getBoundingClientRect();
+       const t = e.touches[0];
+       mouse.x = t.clientX - rect.left;
+       mouse.y = t.clientY - rect.top;
+       mouse.visible = true;
+     };
+
+    // const handleTouchMove = (e) => {
+    //   if (!isHolding) return;
+    //   const rect = parent.getBoundingClientRect();
+    //   const t = e.touches[0];
+    //   mouse.x = t.clientX - rect.left;
+    //   mouse.y = t.clientY - rect.top;
+    // };
 
     const handleTouchEnd = () => {
       isHolding = false;
@@ -322,13 +337,13 @@ const InteractiveBackground = ({
       parent.addEventListener("mousemove", handleMouseMove);
       parent.addEventListener("mouseleave", handleMouseLeave);
       parent.addEventListener("touchstart", handleTouchStart, {
-        passive: true,
+        passive: false,
       });
-      parent.addEventListener("touchmove", handleTouchMove, { passive: true });
+      // parent.addEventListener("touchmove", handleTouchMove, {
+      //   passive: true,
+      // });
       parent.addEventListener("touchend", handleTouchEnd);
       parent.addEventListener("touchcancel", handleTouchEnd);
-      document.addEventListener("touchend", handleTouchEnd);
-      document.addEventListener("touchcancel", handleTouchEnd);
     }
 
     resize();
@@ -341,11 +356,9 @@ const InteractiveBackground = ({
         parent.removeEventListener("mousemove", handleMouseMove);
         parent.removeEventListener("mouseleave", handleMouseLeave);
         parent.removeEventListener("touchstart", handleTouchStart);
-        parent.removeEventListener("touchmove", handleTouchMove);
+        // parent.removeEventListener("touchmove", handleTouchMove);
         parent.removeEventListener("touchend", handleTouchEnd);
         parent.removeEventListener("touchcancel", handleTouchEnd);
-        document.removeEventListener("touchend", handleTouchEnd);
-        document.removeEventListener("touchcancel", handleTouchEnd);
       }
       cancelAnimationFrame(animationFrameId);
       svg.innerHTML = "";
