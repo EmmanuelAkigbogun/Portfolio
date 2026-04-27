@@ -281,9 +281,7 @@ const InteractiveBackground = ({
     const handleMouseMove = (e) => {
       console.log(e.type, e);
 
-      if (e.type === "mousemove") {
-        console.log("inua",e);
-
+      if (e.type === "pointermove") {
         isTouchDevice = false;
         isHolding = true;
         // ignore synthetic mouse events on mobile
@@ -307,7 +305,6 @@ const InteractiveBackground = ({
     };
 
      const handleTouchStart = (e) => {
-       e.preventDefault();
        isTouchDevice = true;
        isHolding = true;
        const rect = parent.getBoundingClientRect();
@@ -334,10 +331,10 @@ const InteractiveBackground = ({
 
     if (booleanConst) {
       window.addEventListener("resize", resize);
-      parent.addEventListener("mousemove", handleMouseMove);
+      parent.addEventListener("pointermove", handleMouseMove);
       parent.addEventListener("mouseleave", handleMouseLeave);
       parent.addEventListener("touchstart", handleTouchStart, {
-        passive: false,
+        passive: true,
       });
       // parent.addEventListener("touchmove", handleTouchMove, {
       //   passive: true,
@@ -353,7 +350,7 @@ const InteractiveBackground = ({
     return () => {
       if (booleanConst) {
         window.removeEventListener("resize", resize);
-        parent.removeEventListener("mousemove", handleMouseMove);
+        parent.removeEventListener("pointermove", handleMouseMove);
         parent.removeEventListener("mouseleave", handleMouseLeave);
         parent.removeEventListener("touchstart", handleTouchStart);
         // parent.removeEventListener("touchmove", handleTouchMove);
