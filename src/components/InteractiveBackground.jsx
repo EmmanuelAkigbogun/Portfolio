@@ -302,9 +302,9 @@ const InteractiveBackground = ({
       parent.addEventListener("mousemove", handleMouseMove);
       parent.addEventListener("mouseleave", handleMouseLeave);
       parent.addEventListener("touchstart", handleTouchStart, {
-        passive: false,
+        passive: true,
       });
-      parent.addEventListener("touchmove", handleTouchMove, { passive: false });
+      parent.addEventListener("touchmove", handleTouchMove, { passive: true });
       parent.addEventListener("touchend", handleTouchEnd);
       parent.addEventListener("touchcancel", handleTouchEnd);
     }
