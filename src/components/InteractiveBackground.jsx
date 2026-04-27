@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from "react";
 
-const InteractiveBackground = ({ booleanConst }) => {
+const InteractiveBackground = ({
+  booleanConst = true,
+  particlesBool = true,
+}) => {
   const svgRef = useRef(null);
 
   useEffect(() => {
@@ -208,10 +211,17 @@ const InteractiveBackground = ({ booleanConst }) => {
       shapesG.innerHTML = "";
       particles = [];
       shapes = [];
-      for (let i = 0; i < 400; i++) particles.push(new Particle());
-      for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("box"));
-      for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("star"));
-      for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("hexagon"));
+      if (particlesBool) {
+        for (let i = 0; i < 400; i++) particles.push(new Particle());
+        for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("box"));
+        for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("star"));
+        for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("hexagon"));
+      } else {
+        for (let i = 0; i < 150; i++) particles.push(new Particle());
+        for (let i = 0; i < 5; i++) shapes.push(new SpecialShape("box"));
+        for (let i = 0; i < 5; i++) shapes.push(new SpecialShape("star"));
+        for (let i = 0; i < 5; i++) shapes.push(new SpecialShape("hexagon"));
+      }
     };
 
     const animate = () => {
