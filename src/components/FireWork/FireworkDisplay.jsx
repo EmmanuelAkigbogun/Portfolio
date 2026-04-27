@@ -11,12 +11,30 @@ const FireworkDisplay = ({ trigger }) => {
       particles = [],
       animationFrameId;
 
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      ctx.scale(dpr, dpr);
-    };
+    // const resize = () => {
+    //   const dpr = window.devicePixelRatio || 1;
+    //   canvas.width = window.innerWidth * dpr;
+    //   canvas.height = window.innerHeight * dpr;
+    //   ctx.scale(dpr, dpr);
+    // };
+
+
+  const resize = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap for performance
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Set internal resolution
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    // Set CSS display size (IMPORTANT: this fixes the 'weird' look)
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    ctx.scale(dpr, dpr);
+  };
+
 
     const getShapePoints = (type) => {
       const points = [];
@@ -252,6 +270,44 @@ const FireworkDisplay = ({ trigger }) => {
       }
     }
 
+    // class Particle {
+    //   constructor(x, y, color, vx, vy, type) {
+    //     this.x = x;
+    //     this.y = y;
+    //     this.color = color;
+    //     this.vx = vx;
+    //     this.vy = vy;
+    //     this.type = type;
+    //     this.gravity = type === "tiny-stars" ? 0.03 : 0.08;
+    //     this.friction = 0.97; // Lower friction means particles travel further
+    //     this.opacity = 1;
+    //     this.decay =
+    //       Math.random() * 0.008 + (type === "tiny-stars" ? 0.025 : 0.012); // Slower decay
+    //   }
+    //   update() {
+    //     this.vx *= this.friction;
+    //     this.vy *= this.friction;
+    //     this.vy += this.gravity;
+    //     this.x += this.vx;
+    //     this.y += this.vy;
+    //     this.opacity -= this.decay;
+    //   }
+    //   draw() {
+    //     if (this.type === "tiny-stars" && Math.random() > 0.8) return;
+    //     ctx.globalAlpha = Math.max(0, this.opacity);
+    //     ctx.fillStyle = this.color;
+    //     ctx.beginPath();
+    //     ctx.arc(
+    //       this.x,
+    //       this.y,
+    //       this.type === "tiny-stars" ? 0.9 : 1.6,
+    //       0,
+    //       Math.PI * 2,
+    //     );
+    //     ctx.fill();
+    //   }
+    // }
+
     class Particle {
       constructor(x, y, color, vx, vy, type) {
         this.x = x;
@@ -261,10 +317,11 @@ const FireworkDisplay = ({ trigger }) => {
         this.vy = vy;
         this.type = type;
         this.gravity = type === "tiny-stars" ? 0.03 : 0.08;
-        this.friction = 0.97; // Lower friction means particles travel further
+        this.friction = 0.96; // Slightly more friction for mobile stability
         this.opacity = 1;
         this.decay =
-          Math.random() * 0.008 + (type === "tiny-stars" ? 0.025 : 0.012); // Slower decay
+          Math.random() * 0.01 + (type === "tiny-stars" ? 0.03 : 0.015);
+        this.size = type === "tiny-stars" ? 1 : 2;
       }
       update() {
         this.vx *= this.friction;
@@ -275,66 +332,111 @@ const FireworkDisplay = ({ trigger }) => {
         this.opacity -= this.decay;
       }
       draw() {
-        if (this.type === "tiny-stars" && Math.random() > 0.8) return;
-        ctx.globalAlpha = Math.max(0, this.opacity);
+        // Skip random frames for tiny stars to save CPU
+        if (this.type === "tiny-stars" && Math.random() > 0.5) return;
+
+        ctx.globalAlpha = this.opacity;
         ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(
-          this.x,
-          this.y,
-          this.type === "tiny-stars" ? 0.9 : 1.6,
-          0,
-          Math.PI * 2,
-        );
-        ctx.fill();
+        // fillRect is MUCH faster than beginPath/arc/fill
+        ctx.fillRect(this.x, this.y, this.size, this.size);
       }
     }
 
+
+    // const createBurst = (x, y, color, type) => {
+    //   const points = getShapePoints(type);
+    //   points.forEach((p) =>
+    //     particles.push(new Particle(x, y, color, p.vx, p.vy, type)),
+    //   );
+    // };
     const createBurst = (x, y, color, type) => {
+      // MOBILE CAP: Stop adding particles if the screen is already crowded.
+      // 2000 is a safe limit for most modern phones.
+      if (particles.length > 2000) return;
+
       const points = getShapePoints(type);
       points.forEach((p) =>
         particles.push(new Particle(x, y, color, p.vx, p.vy, type)),
       );
     };
 
-    const animate = () => {
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; // Slightly lighter for longer-lasting trails
-      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-      ctx.globalCompositeOperation = "lighter";
 
-      if (rockets.length === 0 && particles.length === 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      } else {
-        rockets = rockets.filter((r) => !r.dead);
-        rockets.forEach((r) => {
-          r.update();
-          r.draw();
-        });
-        particles = particles.filter((p) => p.opacity > 0);
-        particles.forEach((p) => {
-          p.update();
-          p.draw();
-        });
-      }
-      animationFrameId = requestAnimationFrame(animate);
-    };
+    // const animate = () => {
+    //   ctx.globalCompositeOperation = "destination-out";
+    //   ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; // Slightly lighter for longer-lasting trails
+    //   ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    //   ctx.globalCompositeOperation = "lighter";
+
+    //   if (rockets.length === 0 && particles.length === 0) {
+    //     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //   } else {
+    //     rockets = rockets.filter((r) => !r.dead);
+    //     rockets.forEach((r) => {
+    //       r.update();
+    //       r.draw();
+    //     });
+    //     particles = particles.filter((p) => p.opacity > 0);
+    //     particles.forEach((p) => {
+    //       p.update();
+    //       p.draw();
+    //     });
+    //   }
+    //   animationFrameId = requestAnimationFrame(animate);
+    // };
+const animate = () => {
+  // 1. Standard trail logic (fade effect)
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+  ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+  ctx.globalCompositeOperation = "lighter";
+
+  // Check if we have anything to draw
+  if (rockets.length > 0 || particles.length > 0) {
+    // Update and Draw Rockets
+    rockets = rockets.filter((r) => !r.dead);
+    rockets.forEach((r) => {
+      r.update();
+      r.draw();
+    });
+
+    // Update and Draw Particles
+    particles = particles.filter((p) => p.opacity > 0);
+    particles.forEach((p) => {
+      p.update();
+      p.draw();
+    });
+  } else {
+    // 2. THE FIX: If nothing is left, wipe the entire canvas crystal clean
+    // This prevents the "last frame" from sticking around
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  animationFrameId = requestAnimationFrame(animate);
+};
+
+
+    
 
 if (trigger > 0) {
   const width = window.innerWidth;
 
-  // This formula targets: 1600px -> 40 rockets | 400px -> 6 rockets
-  // Logic: (Progress between 400 and 1600) * (Range of rockets) + Base rockets
-  let responsiveCount = Math.floor(((width - 400) / 1200) * (40 - 6) + 6);
+  // Formula targets: 1600px -> 30 rockets | 400px -> 10 rockets
+  // Calculation: ((width - 400) / 1200) * (30 - 10) + 10
+  let responsiveCount = Math.floor(((width - 400) / 1200) * 20 + 10);
 
-  // Safety bounds: Never less than 5, never more than 45
-  responsiveCount = Math.min(Math.max(responsiveCount, 5), 45);
+  // Safety bounds: Minimum 8, Maximum 35
+  responsiveCount = Math.min(Math.max(responsiveCount, 8), 35);
 
   for (let i = 0; i < responsiveCount; i++) {
-    // Space them out: mobile gets a slower "staccato" rhythm
-    const delay = i * (width < 600 ? 400 : 200);
+    // Mobile gets a slightly longer delay to keep the CPU cool
+    const delay = i * (width < 600 ? 350 : 200);
 
-    setTimeout(() => rockets.push(new Rocket()), delay + Math.random() * 300);
+    setTimeout(
+      () => {
+        rockets.push(new Rocket());
+      },
+      delay + Math.random() * 300,
+    );
   }
 }
 
