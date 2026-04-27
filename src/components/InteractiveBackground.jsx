@@ -234,9 +234,6 @@ const InteractiveBackground = ({
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);
-        // Bumped from 0.2 to 0.7 for vivid colour glow
-        // stop0.setAttribute("stop-color", `rgba(${r},${g},${b},0)`);
-        // stop1.setAttribute("stop-color", "rgba(0,0,0,0)");
 
         coreGlow.setAttribute("cx", core.x);
         coreGlow.setAttribute("cy", core.y);
@@ -273,10 +270,13 @@ const InteractiveBackground = ({
       mouse.y = e.clientY - rect.top;
       mouse.visible = true;
     };
+
     const handleMouseLeave = () => {
       mouse.visible = false;
     };
+
     const handleTouchStart = (e) => {
+      e.preventDefault();
       const rect = parent.getBoundingClientRect();
       const t = e.touches[0];
       mouse.x = t.clientX - rect.left;
@@ -284,11 +284,29 @@ const InteractiveBackground = ({
       mouse.visible = true;
     };
 
+    const handleTouchMove = (e) => {
+      e.preventDefault();
+      const rect = parent.getBoundingClientRect();
+      const t = e.touches[0];
+      mouse.x = t.clientX - rect.left;
+      mouse.y = t.clientY - rect.top;
+      mouse.visible = true;
+    };
+
+    const handleTouchEnd = () => {
+      mouse.visible = false;
+    };
+
     if (booleanConst) {
       window.addEventListener("resize", resize);
       parent.addEventListener("mousemove", handleMouseMove);
       parent.addEventListener("mouseleave", handleMouseLeave);
-      parent.addEventListener("touchstart", handleTouchStart);
+      parent.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
+      });
+      parent.addEventListener("touchmove", handleTouchMove, { passive: false });
+      parent.addEventListener("touchend", handleTouchEnd);
+      parent.addEventListener("touchcancel", handleTouchEnd);
     }
 
     resize();
@@ -301,6 +319,9 @@ const InteractiveBackground = ({
         parent.removeEventListener("mousemove", handleMouseMove);
         parent.removeEventListener("mouseleave", handleMouseLeave);
         parent.removeEventListener("touchstart", handleTouchStart);
+        parent.removeEventListener("touchmove", handleTouchMove);
+        parent.removeEventListener("touchend", handleTouchEnd);
+        parent.removeEventListener("touchcancel", handleTouchEnd);
       }
       cancelAnimationFrame(animationFrameId);
       svg.innerHTML = "";
