@@ -72,6 +72,7 @@ const InteractiveBackground = ({
 
     let W, H;
     const mouse = { x: null, y: null, visible: false };
+    let isHolding = false;
     const core = { x: 0, y: 0, size: 60, glowSize: 160 };
     let particles = [],
       shapes = [];
@@ -106,7 +107,7 @@ const InteractiveBackground = ({
         const dx = core.x - this.x,
           dy = core.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (mouse.visible && dist < core.glowSize) {
+        if (isHolding && mouse.x !== null && dist < core.glowSize) {
           this.x += dx * 0.015;
           this.y += dy * 0.015;
         } else {
@@ -144,7 +145,7 @@ const InteractiveBackground = ({
         const dx = core.x - this.x,
           dy = core.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (mouse.visible && dist < core.glowSize) {
+        if (isHolding && mouse.x !== null && dist < core.glowSize) {
           this.x += dx * 0.015;
           this.y += dy * 0.015;
         } else {
@@ -225,16 +226,25 @@ const InteractiveBackground = ({
     };
 
     const animate = () => {
-      if (mouse.x != null && mouse.y != null) {
+      if (isHolding && mouse.x !== null && mouse.y !== null) {
         core.x += (mouse.x - core.x) * 0.05;
         core.y += (mouse.y - core.y) * 0.05;
       }
 
-      if (mouse.visible) {
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
+      if (isHolding && mouse.x !== null && mouse.y !== null) {
+        coreGlow.setAttribute("cx", core.x);
+        coreGlow.setAttribute("cy", core.y);
+        coreGlow.setAttribute("r", core.glowSize);
+        coreGlow.setAttribute("opacity", "1");
 
+        sphereBody.setAttribute("cx", core.x);
+        sphereBody.setAttribute("cy", core.y);
+        sphereBody.setAttribute("opacity", "1");
+
+        coreRing.setAttribute("cx", core.x);
+        coreRing.setAttribute("cy", core.y);
+        coreRing.setAttribute("opacity", "1");
+      } else if (mouse.visible && mouse.x !== null && mouse.y !== null) {
         coreGlow.setAttribute("cx", core.x);
         coreGlow.setAttribute("cy", core.y);
         coreGlow.setAttribute("r", core.glowSize);
@@ -264,7 +274,20 @@ const InteractiveBackground = ({
       animationFrameId = requestAnimationFrame(animate);
     };
 
+    let isTouchDevice = false;
+
+    const handleTouchStart = (e) => {
+      isTouchDevice = true;
+      isHolding = true;
+      const rect = parent.getBoundingClientRect();
+      const t = e.touches[0];
+      mouse.x = t.clientX - rect.left;
+      mouse.y = t.clientY - rect.top;
+      mouse.visible = true;
+    };
+
     const handleMouseMove = (e) => {
+      if (isTouchDevice) return; // ignore synthetic mouse events on mobile
       const rect = parent.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
@@ -272,29 +295,26 @@ const InteractiveBackground = ({
     };
 
     const handleMouseLeave = () => {
+      if (isTouchDevice) return;
+      isHolding = false;
       mouse.visible = false;
-    };
-
-    const handleTouchStart = (e) => {
-      e.preventDefault();
-      const rect = parent.getBoundingClientRect();
-      const t = e.touches[0];
-      mouse.x = t.clientX - rect.left;
-      mouse.y = t.clientY - rect.top;
-      mouse.visible = true;
+      mouse.x = null;
+      mouse.y = null;
     };
 
     const handleTouchMove = (e) => {
-      e.preventDefault();
+      if (!isHolding) return;
       const rect = parent.getBoundingClientRect();
       const t = e.touches[0];
       mouse.x = t.clientX - rect.left;
       mouse.y = t.clientY - rect.top;
-      mouse.visible = true;
     };
 
     const handleTouchEnd = () => {
+      isHolding = false;
       mouse.visible = false;
+      mouse.x = null;
+      mouse.y = null;
     };
 
     if (booleanConst) {
@@ -307,6 +327,8 @@ const InteractiveBackground = ({
       parent.addEventListener("touchmove", handleTouchMove, { passive: true });
       parent.addEventListener("touchend", handleTouchEnd);
       parent.addEventListener("touchcancel", handleTouchEnd);
+      document.addEventListener("touchend", handleTouchEnd);
+      document.addEventListener("touchcancel", handleTouchEnd);
     }
 
     resize();
@@ -322,6 +344,8 @@ const InteractiveBackground = ({
         parent.removeEventListener("touchmove", handleTouchMove);
         parent.removeEventListener("touchend", handleTouchEnd);
         parent.removeEventListener("touchcancel", handleTouchEnd);
+        document.removeEventListener("touchend", handleTouchEnd);
+        document.removeEventListener("touchcancel", handleTouchEnd);
       }
       cancelAnimationFrame(animationFrameId);
       svg.innerHTML = "";
