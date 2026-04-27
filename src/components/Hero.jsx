@@ -9,8 +9,7 @@ const Hero = () => {
       style={{ position: "relative", overflow: "hidden" }}
     >
       {/* Our new canvas component */}
-      <InteractiveBackground />
-
+      <InteractiveBackground booleanConst={true} />
       <div className="hero-container">
         <div className="hero-content">
           <span className="hero-badge">Digital Artisan & Developer</span>
@@ -23,7 +22,7 @@ const Hero = () => {
             creatures. No fluff. Just bold, beautiful digital infrastructure.
           </p>
           <div className="hero-actions">
-            <button className="btn-hero-primary">Start a Project &gt;</button>
+            <button className="btn-hero-primary">Start a Project </button>
             <button className="btn-hero-secondary">View My Work</button>
           </div>
         </div>

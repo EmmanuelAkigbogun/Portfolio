@@ -4,16 +4,17 @@
   min-height: 100vh;
   width: 100%;
   /* Pointing to Root Background */
-  background: var(--bg-main); 
+  background: var(--bg-main);
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding-top: var(--nav-height); 
+  padding-top: var(--nav-height);
 }
 
 .hero-canvas {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   z-index: 1;
   opacity: 0.4;
 }
@@ -74,7 +75,7 @@
 .btn-hero-primary:hover {
   transform: translateY(-5px) scale(1.02);
   /* Hover glow uses the Gold accent from your root */
-  box-shadow: 0 5px 10px var(--accent-color);
+  box-shadow: 0 5px 20px var(--accent-color);
 }
 
 .btn-hero-secondary {
@@ -98,15 +99,18 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .hero-title { font-size: 3.5rem; letter-spacing: -2px; }
-  .hero-actions { 
+  .hero-title {
+    font-size: 3.5rem;
+    letter-spacing: -2px;
+  }
+  .hero-actions {
     flex-direction: column;
     gap: 15px;
   }
-  .btn-hero-primary, .btn-hero-secondary {
+  .btn-hero-primary,
+  .btn-hero-secondary {
     width: 100%;
     text-align: center;
   }
 }
-
 

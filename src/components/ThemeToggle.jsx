@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./css/Fixedbutton.css";
 
 const ThemeToggle = () => {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     if (isDark) {

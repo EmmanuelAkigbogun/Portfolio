@@ -12,24 +12,7 @@ const CelebrateSection = () => {
       <button
         onClick={() => setFireworkTrigger((prev) => prev + 1)}
         title="Celebrate!"
-        style={{
-          position: "fixed",
-          bottom: "32px",
-          right: "32px",
-          width: "48px" /* Matched to Left Button */,
-          height: "48px" /* Matched to Left Button */,
-          borderRadius: "50%",
-          background: "var(--btn-primary-bg)",
-          color: "var(--btn-primary-text)",
-          border: "none",
-          cursor: "pointer",
-          zIndex: 10001,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-          transition: "var(--transition)",
-        }}
+        className="btn-control-circle btn-pos-right"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
           {" "}

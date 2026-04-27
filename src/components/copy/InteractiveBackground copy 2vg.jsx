@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-const InteractiveBackground = ({ booleanConst }) => {
+const InteractiveBackground = () => {
   const svgRef = useRef(null);
 
   useEffect(() => {
@@ -225,8 +225,8 @@ const InteractiveBackground = ({ booleanConst }) => {
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);
         // Bumped from 0.2 to 0.7 for vivid colour glow
-        // stop0.setAttribute("stop-color", `rgba(${r},${g},${b},0)`);
-        // stop1.setAttribute("stop-color", "rgba(0,0,0,0)");
+        stop0.setAttribute("stop-color", `rgba(${r},${g},${b},0.7)`);
+        stop1.setAttribute("stop-color", "rgba(0,0,0,0)");
 
         coreGlow.setAttribute("cx", core.x);
         coreGlow.setAttribute("cy", core.y);
@@ -274,24 +274,20 @@ const InteractiveBackground = ({ booleanConst }) => {
       mouse.visible = true;
     };
 
-    if (booleanConst) {
-      window.addEventListener("resize", resize);
-      parent.addEventListener("mousemove", handleMouseMove);
-      parent.addEventListener("mouseleave", handleMouseLeave);
-      parent.addEventListener("touchstart", handleTouchStart);
-    }
+    window.addEventListener("resize", resize);
+    parent.addEventListener("mousemove", handleMouseMove);
+    parent.addEventListener("mouseleave", handleMouseLeave);
+    parent.addEventListener("touchstart", handleTouchStart);
 
     resize();
     init();
     animate();
 
     return () => {
-      if (booleanConst) {
-        window.removeEventListener("resize", resize);
-        parent.removeEventListener("mousemove", handleMouseMove);
-        parent.removeEventListener("mouseleave", handleMouseLeave);
-        parent.removeEventListener("touchstart", handleTouchStart);
-      }
+      window.removeEventListener("resize", resize);
+      parent.removeEventListener("mousemove", handleMouseMove);
+      parent.removeEventListener("mouseleave", handleMouseLeave);
+      parent.removeEventListener("touchstart", handleTouchStart);
       cancelAnimationFrame(animationFrameId);
       svg.innerHTML = "";
     };

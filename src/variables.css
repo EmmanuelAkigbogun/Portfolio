@@ -13,6 +13,21 @@
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+:root.white {
+  --bg-main: #ffffff;
+  --bg-sidebar: #f5f5f7;
+  --nav-bg: rgba(255, 255, 255, 0.9);
+  --text-main: #1d1d1f;
+  --text-muted: #86868b;
+  --accent-color: #d4c645; /* Darkened slightly for better contrast on white */
+  --btn-primary-bg: #000000;
+  --btn-primary-text: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --nav-height: 80px;
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
 /* --- NIGHT / DARK THEME (Second Root) --- */
 /* This replaces the variables only when .dark-mode is present */
 :root.dark-mode {

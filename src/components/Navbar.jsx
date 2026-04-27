@@ -7,6 +7,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      <InteractiveBackground booleanConst={false} />
       <div className="nav-container">
         <div className="nav-logo">Zephyr Δ</div>
 
@@ -16,7 +17,7 @@ const Navbar = () => {
           onClick={() => setIsOpen(false)}
         >
           <ul className="nav-links-mobile" onClick={(e) => e.stopPropagation()}>
-            <InteractiveBackground />
+            <InteractiveBackground booleanConst={true} />
             <li>Products</li>
             <li>Solutions</li>
             <li>Developers</li>
@@ -26,7 +27,7 @@ const Navbar = () => {
               <button className="btn-text">Sign in</button>
             </li>
             <li>
-              <button className="btn-primary">Hire me &gt;</button>
+              <button className="btn-primary">Hire me</button>
             </li>
           </ul>
         </div>
@@ -42,7 +43,7 @@ const Navbar = () => {
         {/* ACTIONS (Right) */}
         <div className="nav-actions">
           <button className="btn-text desktop-only">Sign in</button>
-          <button className="btn-primary desktop-only">Hire me &gt;</button>
+          <button className="btn-primary desktop-only">Hire me</button>
 
           <div
             className={`hamburger ${isOpen ? "toggle" : ""}`}
