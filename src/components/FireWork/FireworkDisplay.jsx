@@ -320,15 +320,21 @@ const FireworkDisplay = ({ trigger }) => {
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    if (trigger > 0) {
-      // MASSIVE LAUNCH: 40 rockets instead of 20
-      for (let i = 0; i < 40; i++) {
-        setTimeout(
-          () => rockets.push(new Rocket()),
-          i * 180 + Math.random() * 300,
-        );
-      }
-    }
+if (trigger > 0) {
+  // 1. Calculate rocket count based on screen width
+  // Base of ~40 rockets for 1600px, scales down to ~10 for mobile (400px)
+  const responsiveCount = Math.max(10, Math.floor(window.innerWidth / 40));
+  console.log(window.innerWidth);
+  
+
+  for (let i = 0; i < responsiveCount; i++) {
+    // 2. Spread them out slightly more on smaller screens
+    const delay = i * (window.innerWidth < 600 ? 250 : 180);
+
+    setTimeout(() => rockets.push(new Rocket()), delay + Math.random() * 300);
+  }
+}
+
 
     resize();
     animate();
