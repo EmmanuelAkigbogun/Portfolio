@@ -38,6 +38,7 @@ const InteractiveBackground = () => {
       }
       update() {
         if (mouse.x && mouse.y) {
+          //sphere follow mouse rate
           this.x += (mouse.x - this.x) * 0.05;
           this.y += (mouse.y - this.y) * 0.05;
         }
@@ -52,7 +53,9 @@ const InteractiveBackground = () => {
           this.y,
           this.glowSize,
         );
-        gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
+        gradient.addColorStop(0, `rgba(${Math.random() * 255}, ${
+          Math.random() * 255
+        }, ${Math.random() * 255}, 0.2)`);
         gradient.addColorStop(1, "transparent");
         ctx.fillStyle = gradient;
         ctx.beginPath();
@@ -85,8 +88,9 @@ const InteractiveBackground = () => {
         let distance = Math.sqrt(dx * dx + dy * dy);
 
         if (mouse.visible && distance < core.glowSize) {
-          this.x += dx * 0.03;
-          this.y += dy * 0.03;
+          //swallow rate
+          this.x += dx * 0.015;
+          this.y += dy * 0.015;
         } else {
           this.x += this.vx;
           this.y += this.vy;
@@ -98,7 +102,9 @@ const InteractiveBackground = () => {
         if (this.y < 0) this.y = canvas.height;
       }
       draw() {
-        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillStyle = `rgba(${Math.random() * 255}, ${
+          Math.random() * 255
+        }, ${Math.random() * 255}, 0.7)`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -114,7 +120,9 @@ const InteractiveBackground = () => {
         this.spin = Math.random() * 0.02;
       }
       draw() {
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+        ctx.strokeStyle = `rgba(${Math.random() * 255}, ${
+          Math.random() * 255
+        }, ${Math.random() * 255}, 0.5)`;
         ctx.lineWidth = 1;
         ctx.beginPath();
         this.rotation += this.spin;
