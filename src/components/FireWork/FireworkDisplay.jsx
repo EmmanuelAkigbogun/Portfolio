@@ -321,19 +321,23 @@ const FireworkDisplay = ({ trigger }) => {
     };
 
 if (trigger > 0) {
-  // 1. Calculate rocket count based on screen width
-  // Base of ~40 rockets for 1600px, scales down to ~10 for mobile (400px)
-  const responsiveCount = Math.max(10, Math.floor(window.innerWidth / 40));
-  console.log(window.innerWidth);
-  
+  const width = window.innerWidth;
+
+  // This formula targets: 1600px -> 40 rockets | 400px -> 6 rockets
+  // Logic: (Progress between 400 and 1600) * (Range of rockets) + Base rockets
+  let responsiveCount = Math.floor(((width - 400) / 1200) * (40 - 6) + 6);
+
+  // Safety bounds: Never less than 5, never more than 45
+  responsiveCount = Math.min(Math.max(responsiveCount, 5), 45);
 
   for (let i = 0; i < responsiveCount; i++) {
-    // 2. Spread them out slightly more on smaller screens
-    const delay = i * (window.innerWidth < 600 ? 250 : 180);
+    // Space them out: mobile gets a slower "staccato" rhythm
+    const delay = i * (width < 600 ? 400 : 200);
 
     setTimeout(() => rockets.push(new Rocket()), delay + Math.random() * 300);
   }
 }
+
 
 
     resize();
