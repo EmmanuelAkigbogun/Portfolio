@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { Images } from "../../assets/images";
 const FireworkDisplay = ({
   trigger = 0,
-  texts = ["Δαρk", "WELCOME", "Zephyr Δ"],
-  shapes = ["heart", "star"],
+  texts = [],//["Δαρk", "WELCOME", "Zephyr Δ"],
+  shapes = ["heart"],
   images = [],
   navHeightVal = 80,
 }) => {
