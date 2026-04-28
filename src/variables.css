@@ -1,6 +1,6 @@
 /* --- DAY / LIGHT THEME (First Root) --- */
 :root {
-  --bg-main: #3d1b5d; 
+  --bg-main: #3d1b5d;
   --bg-sidebar: #2a1244;
   --nav-bg: rgba(61, 27, 93, 0.9);
   --text-main: #ffffff;
@@ -27,7 +27,6 @@
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
 /* --- NIGHT / DARK THEME (Second Root) --- */
 /* This replaces the variables only when .dark-mode is present */
 :root.dark-mode {
@@ -36,10 +35,15 @@
   --nav-bg: rgba(0, 0, 0, 0.9);
   --text-main: #ffffff;
   --text-muted: #adadb0;
-  --accent-color: #f0e68c; 
+  --accent-color: #f0e68c;
   --btn-primary-bg: #ffffff;
   --btn-primary-text: #000000;
   --border-color: rgba(255, 255, 255, 0.1);
   --nav-height: 80px;
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  user-select: none;
+  -webkit-user-select: none;
 }
