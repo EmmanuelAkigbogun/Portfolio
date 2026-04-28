@@ -1,6 +1,12 @@
 import React, { useEffect, useRef } from "react";
-
-const FireworkDisplay = ({ trigger }) => {
+import { Images } from "../../assets/images";
+const FireworkDisplay = ({
+  trigger=0,
+  texts = ["LOVE", "Δαρk"],
+  shapes = ["heart", "star"],
+  images = [],
+  
+}) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -11,43 +17,150 @@ const FireworkDisplay = ({ trigger }) => {
       particles = [],
       animationFrameId;
 
-    // const resize = () => {
-    //   const dpr = window.devicePixelRatio || 1;
-    //   canvas.width = window.innerWidth * dpr;
-    //   canvas.height = window.innerHeight * dpr;
-    //   ctx.scale(dpr, dpr);
-    // };
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = window.innerWidth,
+        h = window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.scale(dpr, dpr);
+    };
 
+    // ── sample filled pixels from offscreen canvas ──
+    const samplePixels = (offCtx, size, count) => {
+      const imgData = offCtx.getImageData(0, 0, size, size).data;
+      const filled = [];
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const i = (y * size + x) * 4;
+          if (imgData[i + 3] > 128) filled.push([x, y]);
+        }
+      }
+      const result = [];
+      for (let i = 0; i < count; i++) {
+        if (!filled.length) break;
+        const [px, py] = filled[Math.floor(Math.random() * filled.length)];
+        result.push({ ox: (px - size / 2) * 0.28, oy: (py - size / 2) * 0.28 });
+      }
+      return result;
+    };
 
-  const resize = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap for performance
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    // ── draw shape onto offscreen canvas ──
+    const drawShape = (offCtx, size, shape) => {
+      offCtx.clearRect(0, 0, size, size);
+      offCtx.fillStyle = "#fff";
+      switch (shape) {
+        case "heart": {
+          offCtx.beginPath();
+          for (let i = 0; i < 300; i++) {
+            const t = (i / 300) * Math.PI * 2;
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = -(
+              13 * Math.cos(t) -
+              5 * Math.cos(2 * t) -
+              2 * Math.cos(3 * t) -
+              Math.cos(4 * t)
+            );
+            const px = size / 2 + x * 7;
+            const py = size / 2 + y * 7;
+            i === 0 ? offCtx.moveTo(px, py) : offCtx.lineTo(px, py);
+          }
+          offCtx.closePath();
+          offCtx.fill();
+          break;
+        }
+        case "rectangle": {
+          offCtx.fillRect(30, 60, 140, 80);
+          break;
+        }
+        case "star": {
+          offCtx.beginPath();
+          for (let i = 0; i < 10; i++) {
+            const angle = (i * Math.PI) / 5 - Math.PI / 2;
+            const r = i % 2 === 0 ? 90 : 40;
+            const px = size / 2 + Math.cos(angle) * r;
+            const py = size / 2 + Math.sin(angle) * r;
+            i === 0 ? offCtx.moveTo(px, py) : offCtx.lineTo(px, py);
+          }
+          offCtx.closePath();
+          offCtx.fill();
+          break;
+        }
+        case "circle": {
+          offCtx.beginPath();
+          offCtx.arc(size / 2, size / 2, 80, 0, Math.PI * 2);
+          offCtx.fill();
+          break;
+        }
+        case "diamond": {
+          offCtx.beginPath();
+          offCtx.moveTo(size / 2, 20);
+          offCtx.lineTo(size - 20, size / 2);
+          offCtx.lineTo(size / 2, size - 20);
+          offCtx.lineTo(20, size / 2);
+          offCtx.closePath();
+          offCtx.fill();
+          break;
+        }
+        default:
+          break;
+      }
+    };
 
-    // Set internal resolution
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    // ── draw text onto offscreen canvas ──
+    const drawText = (offCtx, size, text) => {
+      offCtx.clearRect(0, 0, size, size);
+      offCtx.fillStyle = "#fff";
+      offCtx.font = "bold 70px sans-serif";
+      offCtx.textAlign = "center";
+      offCtx.textBaseline = "middle";
+      offCtx.fillText(text, size / 2, size / 2);
+    };
 
-    // Set CSS display size (IMPORTANT: this fixes the 'weird' look)
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
+    // ── load image and sample pixels (async) ──
+    const loadImage = (src) =>
+      new Promise((resolve) => {
+        const size = 200;
+        const off = document.createElement("canvas");
+        off.width = off.height = size;
+        const offCtx = off.getContext("2d");
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          const scale = Math.min(size / img.width, size / img.height) * 0.9;
+          const sw = img.width * scale,
+            sh = img.height * scale;
+          offCtx.clearRect(0, 0, size, size);
+          offCtx.drawImage(img, (size - sw) / 2, (size - sh) / 2, sw, sh);
+          resolve({ type: "image", src, pts: samplePixels(offCtx, size, 240) });
+        };
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
 
-    ctx.scale(dpr, dpr);
-  };
+    // ── get points for shape or text (sync) ──
+    const getPixelPoints = (type, value) => {
+      const size = 200;
+      const off = document.createElement("canvas");
+      off.width = off.height = size;
+      const offCtx = off.getContext("2d");
+      if (type === "shape") drawShape(offCtx, size, value);
+      if (type === "text") drawText(offCtx, size, value);
+      return samplePixels(offCtx, size, 240);
+    };
 
-
-    const getShapePoints = (type) => {
+    // ── normal math-based firework points ──
+    const getMathPoints = (type) => {
+      const count = type === "tiny-stars" ? 180 : 140;
       const points = [];
-      // Increased particle count for "fuller" screen coverage
-      const count = type === "firework" || type === "tiny-stars" ? 180 : 140;
-
       for (let i = 0; i < count; i++) {
         let vx = 0,
           vy = 0;
         const t = (i / count) * Math.PI * 2;
-
         switch (type) {
-          case "love":
+          case "love": {
             vx = 16 * Math.pow(Math.sin(t), 3);
             vy = -(
               13 * Math.cos(t) -
@@ -58,171 +171,197 @@ const FireworkDisplay = ({ trigger }) => {
             vx *= 0.8;
             vy *= 0.8;
             break;
-
-          case "sin":
+          }
+          case "sin": {
             vx = t;
-            vy = Math.tan((1 / 2) * t);
+            vy = Math.tan(0.5 * t);
             vx *= 0.8;
             vy *= 0.8;
             break;
-          case "classic":
-            // THE "NORMAL" FIREWORK (From the code you just pasted)
+          }
+          case "classic": {
             const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 6 + 5; // Exact speed from your class Particle
+            const speed = Math.random() * 6 + 5;
             vx = Math.cos(angle) * speed;
             vy = Math.sin(angle) * speed;
             break;
-          case "bird":
-            // 1. Map particles from -1 to 1 (left wing to right wing)
+          }
+          case "bird": {
             const xRatio = (i / count) * 2 - 1;
-
-            // 2. The Horizontal Span (Width)
             vx = xRatio * 25;
-
-            // 3. The Vertical Curve (Height)
-            // We use Math.abs(xRatio) to create symmetry
-            const wingShape = Math.pow(Math.abs(xRatio), 0.5); // Creates the lift in the wings
-            const bodyDip = Math.cos(xRatio * Math.PI); // Creates the "M" dip in the center
-
-            // 4. Combine and scale
-            // Adjust 0.1 to make the wings "flap" if you have a time variable
-            vy = wingShape * 5 + bodyDip * 3;
-
-            // Optional: If you want it to flap, use your global 't' variable:
-            // vy += Math.sin(t * 5 + Math.abs(xRatio) * 10) * 2;
-
-            // Scale for visibility
+            vy =
+              Math.pow(Math.abs(xRatio), 0.5) * 5 +
+              Math.cos(xRatio * Math.PI) * 3;
             vx *= 0.5;
             vy *= 0.5;
             break;
-          case "flower":
-            const ka = 5; // Number of petals
+          }
+          case "flower": {
             const angleVal = (i / count) * Math.PI * 2;
-            const ra = 15 * Math.cos(ka * angleVal);
+            const ra = 15 * Math.cos(5 * angleVal);
             vx = ra * Math.cos(angleVal);
             vy = ra * Math.sin(angleVal);
             break;
-          case "butterfly":
-            const angel = (i / count) * Math.PI * 12; // 6 full rotations for detail
-
-            // The "Fay's Butterfly" formula
-            const e = Math.E;
+          }
+          case "butterfly": {
+            const angel = (i / count) * Math.PI * 12;
             const rat =
-              Math.pow(e, Math.sin(angel)) -
+              Math.pow(Math.E, Math.sin(angel)) -
               2 * Math.cos(4 * angel) +
               Math.pow(Math.sin((2 * angel - Math.PI) / 24), 5);
-
-            // Scale it up (the formula usually results in a small radius)
-            const scale = 5;
-            vx = rat * Math.sin(angel) * scale;
-            vy = -rat * Math.cos(angel) * scale; // Negative to keep it upright
+            vx = rat * Math.sin(angel) * 5;
+            vy = -rat * Math.cos(angel) * 5;
             break;
-
-          case "spiral":
+          }
+          case "spiral": {
             const ang = 0.15 * i;
             vx = (1 + ang) * Math.cos(ang) * 0.7;
             vy = (1 + ang) * Math.sin(ang) * 0.7;
             break;
-          case "tiny-stars":
-            const sT = Math.random() * 18 + 4; // Wider spread
+          }
+          case "tiny-stars": {
+            const sT = Math.random() * 18 + 4;
             vx = Math.cos(t) * sT;
             vy = Math.sin(t) * sT;
             break;
-          case "fractals":
-            // 1. Create a "seed" (Change this number for a totally different shape!)
-            const seed = 42;
-            const rand = (n) => Math.sin(n * 43758.5453 + seed) % 1;
-
-            // 2. Starting coordinates for this specific particle
-            let xx = (i / count) * 2 - 1;
-            let yy = rand(i);
-
-            // 3. Mutation Loop
-            // We use random-looking constants to "mutate" the position
-            for (let j = 0; j < 5; j++) {
-              const prevX = xx;
-              // These 'magic numbers' can be randomized to change the fractal type
-              xx = Math.sin(prevX * 1.2 + yy * 0.5 + t * 0.1);
-              yy = Math.cos(prevX * 0.8 - yy * 1.5 + t * 0.05);
-            }
-
-            // 4. Scale and position
-            vx = xx * 20;
-            vy = yy * 20;
-            break;
-
-          case "fractal":
-            // 1. Get a normalized coordinate (-1 to 1)
-            let nx = (i / count) * 2 - 1;
-            let ny = Math.sin(i + t) * 2 - 1; // Uses time to shift the 'seed'
-
-            let x = nx;
-            let y = ny;
-
-            // 2. Iteration: This is what creates the "fractal" complexity
-            // We run the math on the same point multiple times
-            for (let iter = 0; iter < 4; iter++) {
-              const nextX = x * x - y * y + nx;
-              const nextY = 2 * x * y + ny;
-              x = nextX;
-              y = nextY;
-            }
-
-            // 3. Scale the result so it stays on screen
-            vx = x * 10;
-            vy = y * 10;
-            break;
-
-          case "star":
-            const points = 5;
-            const numVertices = points * 2; // 10 total points (5 peaks, 5 valleys)
-            const innerRadius = 7;
-            const outerRadius = 15;
-
-            // 1. Find the progress around the circle (0 to 1)
+          }
+          case "star": {
+            const numVertices = 10;
             const progress = i / count;
             const ta = progress * Math.PI * 2;
-
-            // 2. Figure out which "section" of the star we are in (0 to 9)
             const section = progress * numVertices;
-
-            // 3. Get the remainder (0 to 1) to transition between radii
-            const segmentProgress = section % 1;
-
-            // 4. Determine if the current segment starts at a peak or valley
             const isEven = Math.floor(section) % 2 === 0;
-
-            // 5. Smoothly interpolate the radius
-            let r;
-            if (isEven) {
-              // Transition from outer to inner
-              r = outerRadius + (innerRadius - outerRadius) * segmentProgress;
-            } else {
-              // Transition from inner to outer
-              r = innerRadius + (outerRadius - innerRadius) * segmentProgress;
-            }
-
+            const r = isEven
+              ? 15 + (7 - 15) * (section % 1)
+              : 7 + (15 - 7) * (section % 1);
             vx = r * Math.cos(ta) * 0.7;
             vy = r * Math.sin(ta) * 0.7;
             break;
-
-          default: // Normal Firework
-            const sN = Math.random() * 12 + 6; // Faster burst
-            vx = Math.cos(t) * sN;
-            vy = Math.sin(t) * sN;
+          }
+          default: {
+            vx = Math.cos(t) * (Math.random() * 12 + 6);
+            vy = Math.sin(t) * (Math.random() * 12 + 6);
+          }
         }
         points.push({ vx: vx * 0.45, vy: vy * 0.45 });
       }
       return points;
     };
 
+    // ── ShapeParticle — forms picture then explodes ──
+    class ShapeParticle {
+      constructor(cx, cy, color, ox, oy) {
+        this.tx = cx + ox;
+        this.ty = cy + oy;
+        this.x = cx + (Math.random() - 0.5) * 320;
+        this.y = cy + (Math.random() - 0.5) * 320;
+        this.color = color;
+        this.phase = "form";
+        this.formT = 0;
+        this.holdT = 0;
+        this.vx = 0;
+        this.vy = 0;
+        this.opacity = 0;
+        this.dead = false;
+      }
+      update() {
+        if (this.phase === "form") {
+          this.x += (this.tx - this.x) * 0.08;
+          this.y += (this.ty - this.y) * 0.08;
+          this.formT += 0.045;
+          this.opacity = Math.min(1, this.formT * 1.5);
+          if (this.formT >= 1) {
+            this.x = this.tx;
+            this.y = this.ty;
+            this.phase = "hold";
+          }
+        } else if (this.phase === "hold") {
+          this.holdT++;
+          if (this.holdT > 45) {
+            this.phase = "explode";
+            const angle = Math.random() * Math.PI * 2;
+            const spd = Math.random() * 8 + 3;
+            this.vx = Math.cos(angle) * spd;
+            this.vy = Math.sin(angle) * spd;
+          }
+        } else {
+          this.vx *= 0.95;
+          this.vy *= 0.95;
+          this.vy += 0.1;
+          this.x += this.vx;
+          this.y += this.vy;
+          this.opacity -= 0.018;
+          if (this.opacity <= 0) this.dead = true;
+        }
+      }
+      draw() {
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, 2, 2);
+      }
+    }
+
+    // ── Normal Particle ──
+    class Particle {
+      constructor(x, y, color, vx, vy, type) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.vx = vx;
+        this.vy = vy;
+        this.type = type;
+        this.gravity = type === "tiny-stars" ? 0.03 : 0.08;
+        this.friction = 0.96;
+        this.opacity = 1;
+        this.decay =
+          Math.random() * 0.01 + (type === "tiny-stars" ? 0.03 : 0.015);
+        this.dead = false;
+      }
+      update() {
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.opacity -= this.decay;
+        if (this.opacity <= 0) this.dead = true;
+      }
+      draw() {
+        if (this.type === "tiny-stars" && Math.random() > 0.5) return;
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(
+          this.x,
+          this.y,
+          this.type === "tiny-stars" ? 1 : 2,
+          this.type === "tiny-stars" ? 1 : 2,
+        );
+      }
+    }
+
+    // ── unified createBurst — handles everything ──
+    const createBurst = (x, y, color, entry) => {
+      if (particles.length > 2000) return;
+      if (entry.kind === "math") {
+        const pts = getMathPoints(entry.value);
+        pts.forEach((p) =>
+          particles.push(new Particle(x, y, color, p.vx, p.vy, entry.value)),
+        );
+      } else {
+        // shape, text, image — all go through ShapeParticle
+        entry.pts.forEach((p) =>
+          particles.push(new ShapeParticle(x, y, color, p.ox, p.oy)),
+        );
+      }
+    };
+
+    // ── Rocket ──
     class Rocket {
-      constructor() {
-        // Broadened margin to allow rockets to fill the whole horizontal view
+      constructor(entry) {
+        this.entry = entry; // { kind, value, pts }
         const margin = 50;
         this.x = margin + Math.random() * (window.innerWidth - margin * 2);
         this.y = window.innerHeight;
-        // Varied target heights to fill the entire vertical sky
         this.targetY = 50 + Math.random() * (window.innerHeight * 0.6);
         this.speed = Math.random() * 4 + 7;
         this.hue = Math.random() * 360;
@@ -233,36 +372,21 @@ const FireworkDisplay = ({ trigger }) => {
         this.history.push({ x: this.x, y: this.y });
         if (this.history.length > 12) this.history.shift();
         this.y -= this.speed;
-        this.x += Math.sin(this.y / 20) * 1.5; // More dynamic "snake" path
+        this.x += Math.sin(this.y / 20) * 1.5;
         if (this.y <= this.targetY) {
           this.dead = true;
-          const styles = [
-            "sin",
-            "love",
-            "spiral",
-            "firework",
-            "tiny-stars",
-            "rocket",
-            "classic",
-            "star",
-            "bird",
-            "flower",
-            "butterfly",
-            "fractal",
-            "fractals",
-          ];
           createBurst(
             this.x,
             this.y,
             `hsl(${this.hue}, 100%, 75%)`,
-            styles[Math.floor(Math.random() * styles.length)],
+            this.entry,
           );
         }
       }
       draw() {
         this.history.forEach((pos, i) => {
           ctx.globalAlpha = i / this.history.length;
-          ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+          ctx.fillStyle = "rgba(255,255,255,0.9)";
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, (i / 12) * 2.5, 0, Math.PI * 2);
           ctx.fill();
@@ -270,186 +394,92 @@ const FireworkDisplay = ({ trigger }) => {
       }
     }
 
-    // class Particle {
-    //   constructor(x, y, color, vx, vy, type) {
-    //     this.x = x;
-    //     this.y = y;
-    //     this.color = color;
-    //     this.vx = vx;
-    //     this.vy = vy;
-    //     this.type = type;
-    //     this.gravity = type === "tiny-stars" ? 0.03 : 0.08;
-    //     this.friction = 0.97; // Lower friction means particles travel further
-    //     this.opacity = 1;
-    //     this.decay =
-    //       Math.random() * 0.008 + (type === "tiny-stars" ? 0.025 : 0.012); // Slower decay
-    //   }
-    //   update() {
-    //     this.vx *= this.friction;
-    //     this.vy *= this.friction;
-    //     this.vy += this.gravity;
-    //     this.x += this.vx;
-    //     this.y += this.vy;
-    //     this.opacity -= this.decay;
-    //   }
-    //   draw() {
-    //     if (this.type === "tiny-stars" && Math.random() > 0.8) return;
-    //     ctx.globalAlpha = Math.max(0, this.opacity);
-    //     ctx.fillStyle = this.color;
-    //     ctx.beginPath();
-    //     ctx.arc(
-    //       this.x,
-    //       this.y,
-    //       this.type === "tiny-stars" ? 0.9 : 1.6,
-    //       0,
-    //       Math.PI * 2,
-    //     );
-    //     ctx.fill();
-    //   }
-    // }
-
-    class Particle {
-      constructor(x, y, color, vx, vy, type) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.vx = vx;
-        this.vy = vy;
-        this.type = type;
-        this.gravity = type === "tiny-stars" ? 0.03 : 0.08;
-        this.friction = 0.96; // Slightly more friction for mobile stability
-        this.opacity = 1;
-        this.decay =
-          Math.random() * 0.01 + (type === "tiny-stars" ? 0.03 : 0.015);
-        this.size = type === "tiny-stars" ? 1 : 2;
+    // ── animate ──
+    const animate = () => {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0,0,0,0.4)";
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.globalCompositeOperation = "lighter";
+      if (rockets.length > 0 || particles.length > 0) {
+        rockets = rockets.filter((r) => !r.dead);
+        rockets.forEach((r) => {
+          r.update();
+          r.draw();
+        });
+        particles = particles.filter((p) => !p.dead);
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
-      update() {
-        this.vx *= this.friction;
-        this.vy *= this.friction;
-        this.vy += this.gravity;
-        this.x += this.vx;
-        this.y += this.vy;
-        this.opacity -= this.decay;
-      }
-      draw() {
-        // Skip random frames for tiny stars to save CPU
-        if (this.type === "tiny-stars" && Math.random() > 0.5) return;
-
-        ctx.globalAlpha = this.opacity;
-        ctx.fillStyle = this.color;
-        // fillRect is MUCH faster than beginPath/arc/fill
-        ctx.fillRect(this.x, this.y, this.size, this.size);
-      }
-    }
-
-
-    // const createBurst = (x, y, color, type) => {
-    //   const points = getShapePoints(type);
-    //   points.forEach((p) =>
-    //     particles.push(new Particle(x, y, color, p.vx, p.vy, type)),
-    //   );
-    // };
-    const createBurst = (x, y, color, type) => {
-      // MOBILE CAP: Stop adding particles if the screen is already crowded.
-      // 2000 is a safe limit for most modern phones.
-      if (particles.length > 2000) return;
-
-      const points = getShapePoints(type);
-      points.forEach((p) =>
-        particles.push(new Particle(x, y, color, p.vx, p.vy, type)),
-      );
+      animationFrameId = requestAnimationFrame(animate);
     };
 
+    // ── build the unified pool then launch ──
+    const buildPoolAndLaunch = async () => {
+      const pool = [];
 
-    // const animate = () => {
-    //   ctx.globalCompositeOperation = "destination-out";
-    //   ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; // Slightly lighter for longer-lasting trails
-    //   ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-    //   ctx.globalCompositeOperation = "lighter";
+      // math shapes — always in the pool
+      const mathTypes = [
+        "sin",
+        "love",
+        "spiral",
+        "classic",
+        "star",
+        "bird",
+        "flower",
+        "butterfly",
+        "tiny-stars",
+      ];
+      mathTypes.forEach((v) => pool.push({ kind: "math", value: v }));
 
-    //   if (rockets.length === 0 && particles.length === 0) {
-    //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //   } else {
-    //     rockets = rockets.filter((r) => !r.dead);
-    //     rockets.forEach((r) => {
-    //       r.update();
-    //       r.draw();
-    //     });
-    //     particles = particles.filter((p) => p.opacity > 0);
-    //     particles.forEach((p) => {
-    //       p.update();
-    //       p.draw();
-    //     });
-    //   }
-    //   animationFrameId = requestAnimationFrame(animate);
-    // };
-const animate = () => {
-  // 1. Standard trail logic (fade effect)
-  ctx.globalCompositeOperation = "destination-out";
-  ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-  ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-  ctx.globalCompositeOperation = "lighter";
+      // shapes from prop
+      shapes.forEach((v) => {
+        const pts = getPixelPoints("shape", v);
+        pool.push({ kind: "shape", value: v, pts });
+      });
 
-  // Check if we have anything to draw
-  if (rockets.length > 0 || particles.length > 0) {
-    // Update and Draw Rockets
-    rockets = rockets.filter((r) => !r.dead);
-    rockets.forEach((r) => {
-      r.update();
-      r.draw();
-    });
+      // texts from prop
+      texts.forEach((v) => {
+        const pts = getPixelPoints("text", v);
+        pool.push({ kind: "text", value: v, pts });
+      });
 
-    // Update and Draw Particles
-    particles = particles.filter((p) => p.opacity > 0);
-    particles.forEach((p) => {
-      p.update();
-      p.draw();
-    });
-  } else {
-    // 2. THE FIX: If nothing is left, wipe the entire canvas crystal clean
-    // This prevents the "last frame" from sticking around
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
+      // images from prop — async, preload all first
+      const imageResults = await Promise.all(
+        images.map((src) => loadImage(src)),
+      );
+      imageResults.forEach((result) => {
+        if (result)
+          pool.push({ kind: "image", value: result.src, pts: result.pts });
+      });
 
-  animationFrameId = requestAnimationFrame(animate);
-};
+      // launch rockets — each picks randomly from the full pool
+      const w = window.innerWidth;
+      let count = Math.floor(((w - 400) / 1200) * 20 + 10);
+      count = Math.min(Math.max(count, 8), 35);
 
-
-    
-
-if (trigger > 0) {
-  const width = window.innerWidth;
-
-  // Formula targets: 1600px -> 30 rockets | 400px -> 10 rockets
-  // Calculation: ((width - 400) / 1200) * (30 - 10) + 10
-  let responsiveCount = Math.floor(((width - 400) / 1200) * 20 + 10);
-
-  // Safety bounds: Minimum 8, Maximum 35
-  responsiveCount = Math.min(Math.max(responsiveCount, 8), 35);
-
-  for (let i = 0; i < responsiveCount; i++) {
-    // Mobile gets a slightly longer delay to keep the CPU cool
-    const delay = i * (width < 600 ? 350 : 200);
-
-    setTimeout(
-      () => {
-        rockets.push(new Rocket());
-      },
-      delay + Math.random() * 300,
-    );
-  }
-}
-
-
+      for (let i = 0; i < count; i++) {
+        const delay = i * (w < 600 ? 350 : 200) + Math.random() * 300;
+        setTimeout(() => {
+          const entry = pool[Math.floor(Math.random() * pool.length)];
+          rockets.push(new Rocket(entry));
+        }, delay);
+      }
+    };
 
     resize();
     animate();
+    buildPoolAndLaunch();
     window.addEventListener("resize", resize);
+
     return () => {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [trigger]);
+  },[trigger]);
 
   return (
     <canvas
