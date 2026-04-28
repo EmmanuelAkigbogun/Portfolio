@@ -8,7 +8,6 @@ const CelebrateSection = () => {
   return (
     <div className="app-container">
       <FireworkDisplay trigger={fireworkTrigger} />
-
       <button
         onClick={() => setFireworkTrigger((prev) => prev + 1)}
         title="Celebrate!"

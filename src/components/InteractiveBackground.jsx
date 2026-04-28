@@ -345,7 +345,7 @@ const InteractiveBackground = ({
         left: 0,
         width: "100%",
         height: "100%",
-        zIndex: 1,
+        zIndex: 1000,
         pointerEvents: "none",
       }}
       xmlns="http://www.w3.org/2000/svg"

@@ -9,7 +9,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <>
     <Navbar />
     <Hero />
-    <CelebrateSection />
     <ThemeToggle />
+    <CelebrateSection />
   </>,
 );

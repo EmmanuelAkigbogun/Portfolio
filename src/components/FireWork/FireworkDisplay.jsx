@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { Images } from "../../assets/images";
 const FireworkDisplay = ({
-  trigger=0,
-  texts = ["LOVE", "Δαρk"],
+  trigger = 0,
+  texts = ["Δαρk", "WELCOME", "Zephyr Δ"],
   shapes = ["heart", "star"],
   images = [],
-  
+  navHeightVal = 80,
 }) => {
   const canvasRef = useRef(null);
 
@@ -113,7 +113,9 @@ const FireworkDisplay = ({
     const drawText = (offCtx, size, text) => {
       offCtx.clearRect(0, 0, size, size);
       offCtx.fillStyle = "#fff";
-      offCtx.font = "bold 70px sans-serif";
+      // offCtx.font = "bold 70px sans-serif";
+      const fontSize = Math.floor(size / (text.length * 0.6));
+      offCtx.font = `bold ${fontSize}px sans-serif`;
       offCtx.textAlign = "center";
       offCtx.textBaseline = "middle";
       offCtx.fillText(text, size / 2, size / 2);
@@ -189,9 +191,10 @@ const FireworkDisplay = ({
           case "bird": {
             const xRatio = (i / count) * 2 - 1;
             vx = xRatio * 25;
-            vy =
+            vy = -(
               Math.pow(Math.abs(xRatio), 0.5) * 5 +
-              Math.cos(xRatio * Math.PI) * 3;
+              Math.cos(xRatio * Math.PI) * 3
+            );
             vx *= 0.5;
             vy *= 0.5;
             break;
@@ -234,6 +237,87 @@ const FireworkDisplay = ({
             const r = isEven
               ? 15 + (7 - 15) * (section % 1)
               : 7 + (15 - 7) * (section % 1);
+            vx = r * Math.cos(ta) * 0.7;
+            vy = r * Math.sin(ta) * 0.7;
+            break;
+          }
+
+          case "fractals": {
+            // 1. Create a "seed" (Change this number for a totally different shape!)
+            const seed = 42;
+            const rand = (n) => Math.sin(n * 43758.5453 + seed) % 1;
+
+            // 2. Starting coordinates for this specific particle
+            let xx = (i / count) * 2 - 1;
+            let yy = rand(i);
+
+            // 3. Mutation Loop
+            // We use random-looking constants to "mutate" the position
+            for (let j = 0; j < 5; j++) {
+              const prevX = xx;
+              // These 'magic numbers' can be randomized to change the fractal type
+              xx = Math.sin(prevX * 1.2 + yy * 0.5 + t * 0.1);
+              yy = Math.cos(prevX * 0.8 - yy * 1.5 + t * 0.05);
+            }
+
+            // 4. Scale and position
+            vx = xx * 20;
+            vy = yy * 20;
+            break;
+          }
+
+          case "fractal": {
+            // 1. Get a normalized coordinate (-1 to 1)
+            let nx = (i / count) * 2 - 1;
+            let ny = Math.sin(i + t) * 2 - 1; // Uses time to shift the 'seed'
+
+            let x = nx;
+            let y = ny;
+
+            // 2. Iteration: This is what creates the "fractal" complexity
+            // We run the math on the same point multiple times
+            for (let iter = 0; iter < 4; iter++) {
+              const nextX = x * x - y * y + nx;
+              const nextY = 2 * x * y + ny;
+              x = nextX;
+              y = nextY;
+            }
+
+            // 3. Scale the result so it stays on screen
+            vx = x * 10;
+            vy = y * 10;
+            break;
+          }
+
+          case "starfish": {
+            const points = 5;
+            const numVertices = points * 2; // 10 total points (5 peaks, 5 valleys)
+            const innerRadius = 7;
+            const outerRadius = 15;
+
+            // 1. Find the progress around the circle (0 to 1)
+            const progress = i / count;
+            const ta = progress * Math.PI * 2;
+
+            // 2. Figure out which "section" of the star we are in (0 to 9)
+            const section = progress * numVertices;
+
+            // 3. Get the remainder (0 to 1) to transition between radii
+            const segmentProgress = section % 1;
+
+            // 4. Determine if the current segment starts at a peak or valley
+            const isEven = Math.floor(section) % 2 === 0;
+
+            // 5. Smoothly interpolate the radius
+            let r;
+            if (isEven) {
+              // Transition from outer to inner
+              r = outerRadius + (innerRadius - outerRadius) * segmentProgress;
+            } else {
+              // Transition from inner to outer
+              r = innerRadius + (outerRadius - innerRadius) * segmentProgress;
+            }
+
             vx = r * Math.cos(ta) * 0.7;
             vy = r * Math.sin(ta) * 0.7;
             break;
@@ -362,9 +446,14 @@ const FireworkDisplay = ({
         const margin = 50;
         this.x = margin + Math.random() * (window.innerWidth - margin * 2);
         this.y = window.innerHeight;
-        this.targetY = 50 + Math.random() * (window.innerHeight * 0.6);
+        // explode in range
+        this.targetY =
+          navHeightVal + Math.random() * (window.innerHeight * 0.6);
         this.speed = Math.random() * 4 + 7;
-        this.hue = Math.random() * 360;
+        //explosion color
+        this.r = Math.floor(Math.random() * 256)
+        this.g = Math.floor(Math.random() * 256)
+        this.b = Math.floor(Math.random() * 256)
         this.history = [];
         this.dead = false;
       }
@@ -378,7 +467,7 @@ const FireworkDisplay = ({
           createBurst(
             this.x,
             this.y,
-            `hsl(${this.hue}, 100%, 75%)`,
+            `rgba(${this.r }, ${this.g}, ${this.b}, ${1})`,
             this.entry,
           );
         }
@@ -427,26 +516,42 @@ const FireworkDisplay = ({
         "love",
         "spiral",
         "classic",
-        "star",
+        "starfish",
         "bird",
         "flower",
         "butterfly",
         "tiny-stars",
+        "fractals",
+        "fractal",
       ];
       mathTypes.forEach((v) => pool.push({ kind: "math", value: v }));
 
       // shapes from prop
       shapes.forEach((v) => {
-        const pts = getPixelPoints("shape", v);
-        pool.push({ kind: "shape", value: v, pts });
+        if (v.endsWith("$")) {
+          const base = v.slice(0, -1);
+          const mathPts = getMathPoints(base);
+          if (!mathPts.length) return;
+          const pts = mathPts.map((p) => ({ ox: p.vx * 18, oy: p.vy * 18 }));
+          pool.push({ kind: "shape", value: base, pts });
+        } else {
+          const pts = getPixelPoints("shape", v);
+          pool.push({ kind: "shape", value: v, pts });
+        }
       });
 
-      // texts from prop
       texts.forEach((v) => {
-        const pts = getPixelPoints("text", v);
-        pool.push({ kind: "text", value: v, pts });
+        if (v.endsWith("$")) {
+          const base = v.slice(0, -1);
+          const mathPts = getMathPoints(base);
+          if (!mathPts.length) return;
+          const pts = mathPts.map((p) => ({ ox: p.vx * 18, oy: p.vy * 18 }));
+          pool.push({ kind: "text", value: base, pts });
+        } else {
+          const pts = getPixelPoints("text", v);
+          pool.push({ kind: "text", value: v, pts });
+        }
       });
-
       // images from prop — async, preload all first
       const imageResults = await Promise.all(
         images.map((src) => loadImage(src)),
@@ -457,9 +562,10 @@ const FireworkDisplay = ({
       });
 
       // launch rockets — each picks randomly from the full pool
+      //fire work ammount
       const w = window.innerWidth;
       let count = Math.floor(((w - 400) / 1200) * 20 + 10);
-      count = Math.min(Math.max(count, 8), 35);
+      count = Math.min(Math.max(count, 20), 70);
 
       for (let i = 0; i < count; i++) {
         const delay = i * (w < 600 ? 350 : 200) + Math.random() * 300;
@@ -479,7 +585,7 @@ const FireworkDisplay = ({
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationFrameId);
     };
-  },[trigger]);
+  }, [trigger]);
 
   return (
     <canvas
@@ -491,7 +597,7 @@ const FireworkDisplay = ({
         width: "100vw",
         height: "100vh",
         pointerEvents: "none",
-        zIndex: 0,
+        zIndex: 100,
       }}
     />
   );
