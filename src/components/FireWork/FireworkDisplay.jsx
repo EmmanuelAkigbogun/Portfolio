@@ -645,7 +645,6 @@ const FireworkDisplay = ({
         // "sin",
         "firstfire",
         "bird",
-        "waves",
         "fractals",
         "phoenix",
         "waves",
