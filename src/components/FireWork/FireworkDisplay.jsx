@@ -1,11 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { Images } from "../../assets/images";
 const FireworkDisplay = ({
   trigger = 0,
-  texts = [],//["Δαρk", "WELCOME", "Zephyr Δ"],
-  shapes = ["heart"],
+  texts = ["Δαρk"], //["Δαρk", "WELCOME", "Zephyr Δ"],
+  shapes = ["heart", "star"],
   images = [],
-  navHeightVal = 80,
+  navHeightVal = 50,
 }) => {
   const canvasRef = useRef(null);
 
@@ -154,8 +153,21 @@ const FireworkDisplay = ({
     };
 
     // ── normal math-based firework points ──
+
     const getMathPoints = (type) => {
       const count = type === "tiny-stars" ? 180 : 140;
+      ///// multipleguys only phoenxis
+      const a = Math.floor(Math.random() * 6) + 2;
+      const b = Math.floor(Math.random() * 4) + 1;
+      const twist = Math.random() * 3 + 1;
+      const mode = Math.floor(Math.random() * 5);
+      const family = Math.floor(Math.random() * 8);
+      const s1 = Math.random() * 10 + 3;
+      const s2 = Math.random() * 10 + 3;
+      const s3 = Math.random() * 5 + 1;
+      const s4 = Math.random() * Math.PI * 2;
+
+      ///////////////////////
       const points = [];
       for (let i = 0; i < count; i++) {
         let vx = 0,
@@ -172,6 +184,13 @@ const FireworkDisplay = ({
             );
             vx *= 0.8;
             vy *= 0.8;
+            break;
+          }
+          case "firsfire": {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 8 + 2;
+            vx = Math.cos(angle) * speed;
+            vy = Math.sin(angle) * speed;
             break;
           }
           case "sin": {
@@ -241,7 +260,109 @@ const FireworkDisplay = ({
             vy = r * Math.sin(ta) * 0.7;
             break;
           }
-
+          case "waves": {
+            if (family === 0) {
+              vx = s1 * Math.sin(s3 * t + s4);
+              vy = s2 * Math.sin(t);
+            } else if (family === 1) {
+              vx = (s1 + s2) * Math.cos(t) - s2 * Math.cos((s1 / s2 + 1) * t);
+              vy = (s1 + s2) * Math.sin(t) - s2 * Math.sin((s1 / s2 + 1) * t);
+            } else if (family === 2) {
+              vx = (s1 - s2) * Math.cos(t) + s3 * Math.cos((s1 / s2 - 1) * t);
+              vy = (s1 - s2) * Math.sin(t) - s3 * Math.sin((s1 / s2 - 1) * t);
+            } else if (family === 3) {
+              const sign = (v) => (v >= 0 ? 1 : -1);
+              const n = Math.random() * 3 + 0.3;
+              vx = s1 * sign(Math.cos(t)) * Math.pow(Math.abs(Math.cos(t)), n);
+              vy = s2 * sign(Math.sin(t)) * Math.pow(Math.abs(Math.sin(t)), n);
+            } else if (family === 4) {
+              vx =
+                s1 * Math.cos(t) + s2 * Math.cos(2 * t) + s3 * Math.cos(3 * t);
+              vy =
+                s1 * Math.sin(t) -
+                s2 * Math.sin(2 * t) +
+                s3 * Math.sin(3 * t + s4);
+            } else if (family === 5) {
+              const ratio =
+                (Math.floor(Math.random() * 6) + 2) /
+                (Math.floor(Math.random() * 5) + 1);
+              vx = (s1 - s2) * Math.cos(t) + s3 * Math.cos(ratio * t + s4);
+              vy = (s1 - s2) * Math.sin(t) - s3 * Math.sin(ratio * t);
+            } else if (family === 6) {
+              vx = s1 * Math.sin(t + Math.sin(s3 * t + s4));
+              vy = s2 * Math.cos(t + Math.cos(s3 * t));
+            } else {
+              const arms = Math.floor(Math.random() * 7) + 3;
+              const arm = Math.floor((t / (Math.PI * 2)) * arms);
+              const localT = (t / (Math.PI * 2)) * arms - arm;
+              vx = s1 * Math.cos((arm * (Math.PI * 2)) / arms) * localT;
+              vy = s1 * Math.sin((arm * (Math.PI * 2)) / arms) * localT;
+            }
+            vx *= 0.45;
+            vy *= 0.45;
+            break;
+          }
+          case "phoenix": {
+            const wave = Math.sin(t * 3) * 0.5 + 0.5;
+            const flutter = Math.cos(t * 7) * 0.3;
+            const r = (8 + wave * 12) * (1 + flutter);
+            const sweep = t * 2.5;
+            vx = r * Math.cos(sweep) * (1 + Math.sin(t * 5) * 0.4);
+            vy =
+              -(r * Math.sin(sweep) * (1 + Math.cos(t * 4) * 0.4)) -
+              Math.abs(Math.sin(t * 6)) * 8;
+            const chaos = Math.random() * 0.6;
+            vx += Math.cos(t * 11) * chaos * 3;
+            vy += Math.sin(t * 13) * chaos * 3;
+            vx *= 0.45;
+            vy *= 0.45;
+            break;
+          }
+          case "phoenixs": {
+            const r = (8 + 4) * Math.cos(mode * t);
+            switch (mode) {
+              case 0: {
+                // rose curve
+                vx = r * Math.cos(t) * 0.8;
+                vy = r * Math.sin(t) * 0.8;
+                break;
+              }
+              case 1: {
+                // lissajous
+                vx = 14 * Math.sin(a * t + Math.PI / b);
+                vy = 14 * Math.sin(b * t);
+                break;
+              }
+              case 2: {
+                // epitrochoid
+                vx = (8 + 4) * Math.cos(t) - 4 * Math.cos(twist * t);
+                vy = (8 + 4) * Math.sin(t) - 4 * Math.sin(twist * t);
+                break;
+              }
+              case 3: {
+                // hypotrochoid
+                vx = (10 - 3) * Math.cos(t) + 5 * Math.cos(((10 - 3) / 3) * t);
+                vy = (10 - 3) * Math.sin(t) - 5 * Math.sin(((10 - 3) / 3) * t);
+                break;
+              }
+              case 4: {
+                // superellipse
+                const sign = (v) => (v >= 0 ? 1 : -1);
+                vx =
+                  13 *
+                  sign(Math.cos(t)) *
+                  Math.pow(Math.abs(Math.cos(t)), 2 / a);
+                vy =
+                  13 *
+                  sign(Math.sin(t)) *
+                  Math.pow(Math.abs(Math.sin(t)), 2 / b);
+                break;
+              }
+            }
+            vx *= 0.45;
+            vy *= 0.45;
+            break;
+          }
           case "fractals": {
             // 1. Create a "seed" (Change this number for a totally different shape!)
             const seed = 42;
@@ -451,9 +572,9 @@ const FireworkDisplay = ({
           navHeightVal + Math.random() * (window.innerHeight * 0.6);
         this.speed = Math.random() * 4 + 7;
         //explosion color
-        this.r = Math.floor(Math.random() * 256)
-        this.g = Math.floor(Math.random() * 256)
-        this.b = Math.floor(Math.random() * 256)
+        this.r = Math.floor(Math.random() * 256);
+        this.g = Math.floor(Math.random() * 256);
+        this.b = Math.floor(Math.random() * 256);
         this.history = [];
         this.dead = false;
       }
@@ -467,7 +588,7 @@ const FireworkDisplay = ({
           createBurst(
             this.x,
             this.y,
-            `rgba(${this.r }, ${this.g}, ${this.b}, ${1})`,
+            `rgba(${this.r}, ${this.g}, ${this.b}, ${1})`,
             this.entry,
           );
         }
@@ -512,17 +633,23 @@ const FireworkDisplay = ({
 
       // math shapes — always in the pool
       const mathTypes = [
-        "sin",
-        "love",
-        "spiral",
-        "classic",
-        "starfish",
-        "bird",
-        "flower",
+        "fractal",
         "butterfly",
         "tiny-stars",
+        "spiral",
+        "classic",
+        "waves",
+        "starfish",
+        // "flower",
+        // "love",
+        // "sin",
+        "firstfire",
+        "bird",
+        "waves",
         "fractals",
-        "fractal",
+        "phoenix",
+        "waves",
+        "phoenixs",
       ];
       mathTypes.forEach((v) => pool.push({ kind: "math", value: v }));
 
