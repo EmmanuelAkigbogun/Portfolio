@@ -643,7 +643,7 @@ const FireworkDisplay = ({
         // "flower",
         // "love",
         // "sin",
-        "firstfire",
+        //"firstfire",
         "bird",
         "fractals",
         "phoenix",
