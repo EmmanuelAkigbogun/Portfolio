@@ -70,6 +70,15 @@ const largeArtMatrix = [
     specifications: "BIRO ON 300GSM PAPER",
     desc: "Fine pen hatching forming rhythmic lines across smooth paper panels.",
   },
+  {
+    id: 8,
+    src: "https://akigbogun.vercel.app/",
+    mediaType: "image",
+    mediumType: "Traditional Ink",
+    title: "Tactile Cross-Hatch 03",
+    specifications: "BIRO ON 300GSM PAPER",
+    desc: "Fine pen hatching forming rhythmic lines across smooth paper panels.",
+  },
 ];
 
 let nextId = largeArtMatrix.length + 1;
