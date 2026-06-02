@@ -7,7 +7,13 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <InteractiveBackground booleanConst={false} particlesBool={false} />
+      <InteractiveBackground
+        booleanConst={false}
+        defaultFrequency={5}
+        defaultParticles={150}
+        planetCount={2}
+        ringedPlanetCount={5}
+      />
       <div className="nav-container">
         <div className="nav-logo">Zephyr Δ</div>
 
@@ -17,7 +23,13 @@ const Navbar = () => {
           onClick={() => setIsOpen(false)}
         >
           <ul className="nav-links-mobile" onClick={(e) => e.stopPropagation()}>
-            <InteractiveBackground />
+            <InteractiveBackground
+              booleanConst={false}
+              defaultFrequency={4}
+              defaultParticles={100}
+              planetCount={2}
+              ringedPlanetCount={5}
+            />
             <li>Products</li>
             <li>Solutions</li>
             <li>Developers</li>

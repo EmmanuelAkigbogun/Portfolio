@@ -1,0 +1,584 @@
+/* src/components/css/ArtWorksDisplay.css */
+
+/* ─── Section shell ────────────────────────────────────────────────────────── */
+.art-display-section {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  padding: 120px 24px;
+  display: flex;
+  justify-content: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.art-display-section > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.art-display-container {
+  max-width: 1200px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────────── */
+.art-display-header {
+  margin-bottom: 72px;
+  text-align: left;
+}
+
+.art-display-badge {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.art-display-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.art-display-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+/* ─── Card stack ───────────────────────────────────────────────────────────── */
+.art-display-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 96px;
+}
+
+.art-display-row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.art-display-row.reversed {
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+.art-display-row.reversed .art-display-media-frame { order: 2; }
+.art-display-row.reversed .art-display-details-frame { order: 1; }
+
+/* ─── Image frame ──────────────────────────────────────────────────────────── */
+.art-image-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.art-display-media-frame {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+  transition: var(--transition);
+  position: relative;
+}
+
+.art-display-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: crisp-edges;
+  transition: var(--transition);
+}
+
+.art-display-row:hover .art-display-img {
+  transform: scale(1.02);
+}
+
+.art-display-row:hover .art-display-media-frame {
+  border-color: var(--accent-color);
+}
+
+.art-display-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  border: 2px dashed var(--border-color);
+  border-radius: 28px;
+}
+
+/* ─── Medium badge overlay ─────────────────────────────────────────────────── */
+.medium-badge-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  z-index: 3;
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+:root.white .medium-badge-overlay {
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #1d1d1f;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.art-display-row:hover .medium-badge-overlay {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.medium-badge-overlay.admin-active {
+  pointer-events: auto;
+}
+
+.badge-clickable-text {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Details frame ────────────────────────────────────────────────────────── */
+.art-display-details-frame {
+  display: flex;
+  flex-direction: column;
+}
+
+.art-display-meta-top {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.editable-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.art-display-medium {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.art-display-heading {
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.art-display-body {
+  color: var(--text-muted);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+}
+
+/* ─── Edit glyph ───────────────────────────────────────────────────────────── */
+.edit-glyph-indicator {
+  opacity: 0;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.editable-hover-zone:hover > .edit-glyph-indicator,
+.editable-hover-zone:hover .edit-glyph-indicator {
+  opacity: 0.55;
+}
+
+/* ─── Action row ───────────────────────────────────────────────────────────── */
+.art-display-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: var(--transition);
+  margin-top: 12px;
+}
+
+.art-display-row:hover .art-display-action-btn {
+  color: var(--accent-color);
+}
+
+.action-label-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-arrow-glyph {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.art-display-row:hover .action-arrow-glyph {
+  transform: translateX(6px);
+}
+
+/* ─── Delete card button — truly invisible until card row hover ────────────── */
+.btn-delete-card {
+  margin-top: 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: transparent;
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  cursor: default;
+  align-self: flex-start;
+  pointer-events: none;
+  transition: background 0.18s, border 0.18s, color 0.18s, pointer-events 0s;
+}
+
+.art-display-row:hover .btn-delete-card {
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.art-display-row:hover .btn-delete-card:hover {
+  background: var(--bg-sidebar);
+  border-color: var(--text-main);
+  color: var(--text-main);
+}
+
+/* ─── See more / footer ────────────────────────────────────────────────────── */
+.gallery-see-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-see-more {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--border-color);
+  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.btn-see-more:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-color);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-arrow {
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.toggle-label-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gallery-footer-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 2rem;
+}
+
+.btn-add-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1.5px dashed var(--border-color);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.btn-add-card:hover {
+  border-color: var(--accent-color);
+  color: var(--text-main);
+  background: var(--bg-sidebar);
+}
+
+/* ─── Image editor ─────────────────────────────────────────────────────────── */
+.image-edit-trigger {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s;
+  z-index: 10;
+}
+
+.art-image-wrapper:hover .image-edit-trigger {
+  opacity: 1;
+}
+
+.image-edit-trigger:hover {
+  background: rgba(0, 0, 0, 0.92);
+}
+
+.image-editor-panel {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(340px, 92vw);
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.image-editor-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.image-editor-or { text-align: center; }
+
+.image-url-input {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  padding: 6px 10px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.image-url-input:focus { border-color: var(--accent-color); }
+
+.image-url-apply-btn,
+.image-upload-btn {
+  background: var(--btn-primary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--btn-primary-text);
+  font-size: 0.8rem;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+
+.image-url-apply-btn:hover,
+.image-upload-btn:hover { opacity: 0.75; }
+
+.image-editor-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  align-self: flex-end;
+  padding: 2px 4px;
+  transition: color 0.15s;
+}
+
+.image-editor-close:hover { color: var(--text-main); }
+
+/* ─── Universal edit input — inherits the EXACT font of its parent class ────── */
+/*
+  Each input/textarea gets the base reset via .edit-input-match,
+  then a modifier class that overrides font-size/weight/etc to match
+  the display element it replaces exactly.
+*/
+.edit-input-match {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-sidebar);
+  color: var(--text-main);
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+  font-family: inherit;
+  outline: none;
+  padding: 4px 10px;
+  margin: 0;
+  resize: none;
+  line-height: inherit;
+}
+
+/* Badge — matches .art-display-badge */
+.input-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent-color);
+  padding: 3px 10px;
+  border-radius: 30px;
+  width: auto;
+  min-width: 120px;
+}
+
+/* Section title — matches .art-display-title */
+.input-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+/* Section subtitle — matches .art-display-subtitle */
+.input-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  height: 72px;
+  border-radius: 8px;
+}
+
+/* Spec — matches .art-display-medium */
+.input-spec {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-color);
+}
+
+/* Card title — matches .art-display-heading */
+.input-heading {
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+
+/* Card body — matches .art-display-body */
+.input-body {
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  height: 80px;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+/* Action label — matches .art-display-action-btn font */
+.input-action {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  width: auto;
+  min-width: 180px;
+}
+
+/* Action arrow */
+.input-arrow {
+  font-size: 0.95rem;
+  font-weight: 700;
+  width: 48px;
+  text-align: center;
+}
+
+/* Inline badge input inside medium overlay */
+.inline-badge-input {
+  background: var(--bg-sidebar);
+  color: var(--text-main);
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  margin: 0;
+  width: auto;
+  text-align: center;
+  outline: none;
+}

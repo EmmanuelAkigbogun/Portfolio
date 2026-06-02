@@ -4,7 +4,7 @@ const FireworkDisplay = ({
   texts = ["Δαρk"], //["Δαρk", "WELCOME", "Zephyr Δ"],
   shapes = ["heart", "star"],
   images = [],
-  navHeightVal = 50,
+  navHeightVal = 120,
 }) => {
   const canvasRef = useRef(null);
 
@@ -572,9 +572,18 @@ const FireworkDisplay = ({
           navHeightVal + Math.random() * (window.innerHeight * 0.6);
         this.speed = Math.random() * 4 + 7;
         //explosion color
-        this.r = Math.floor(Math.random() * 256);
-        this.g = Math.floor(Math.random() * 256);
-        this.b = Math.floor(Math.random() * 256);
+        // this.r = Math.floor(Math.random() * 256);
+        // this.g = Math.floor(Math.random() * 256);
+        // this.b = Math.floor(Math.random() * 256);
+        if (Math.random() > 0.5) {
+          this.r = 255;
+          this.g = 255;
+          this.b = 255;
+        } else {
+          this.r = 240;
+          this.g = 230;
+          this.b = 140;
+        }
         this.history = [];
         this.dead = false;
       }

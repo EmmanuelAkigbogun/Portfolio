@@ -2,7 +2,10 @@ import React, { useEffect, useRef } from "react";
 
 const InteractiveBackground = ({
   booleanConst = true,
-  particlesBool = true,
+  defaultFrequency = 15,
+  defaultParticles = 400,
+  planetCount = 4,
+  ringedPlanetCount = 16,
 }) => {
   const svgRef = useRef(null);
 
@@ -81,6 +84,11 @@ const InteractiveBackground = ({
     const rndInt = (a, b) => Math.floor(Math.random() * (b - a) + a);
     const rndColor = (alpha) =>
       `rgba(${rndInt(0, 256)},${rndInt(0, 256)},${rndInt(0, 256)},${alpha})`;
+    const rndColorG = (alpha) => {
+      let random = Math.floor(Math.random() * 256);
+      return `rgba(${random},${random},${random},${alpha})`;
+    };
+    const rndColorC = (alpha, r, g, b) => `rgba(${r},${g},${b},${alpha})`;
 
     const resize = () => {
       W = parent.offsetWidth;
@@ -121,9 +129,105 @@ const InteractiveBackground = ({
       draw() {
         this.el.setAttribute("cx", this.x);
         this.el.setAttribute("cy", this.y);
-        this.el.setAttribute("fill", rndColor(0.8));
+        this.el.setAttribute("fill", rndColorG(0.8));
       }
     }
+
+    // class SpecialShape {
+    //   constructor(type) {
+    //     this.type = type;
+    //     this.x = Math.random() * W;
+    //     this.y = Math.random() * H;
+    //     this.size = rnd(3, 7);
+    //     this.vx = rnd(-0.3, 0.3);
+    //     this.vy = rnd(-0.3, 0.3);
+    //     this.rotation = 0;
+    //     this.spin = rnd(0, 0.02);
+    //     this.el = document.createElementNS(svgNS, "path");
+    //     this.el.setAttribute("fill", "none");
+    //     this.el.setAttribute("stroke-width", "1");
+    //     shapesG.appendChild(this.el);
+    //   }
+    //   update() {
+    //     const dx = core.x - this.x,
+    //       dy = core.y - this.y;
+    //     const dist = Math.sqrt(dx * dx + dy * dy);
+    //     if (mouse.visible && mouse.x !== null && dist < core.glowSize) {
+    //       this.x += dx * 0.015;
+    //       this.y += dy * 0.015;
+    //     } else {
+    //       this.x += this.vx;
+    //       this.y += this.vy;
+    //     }
+    //     if (this.x > W) this.x = 0;
+    //     if (this.x < 0) this.x = W;
+    //     if (this.y > H) this.y = 0;
+    //     if (this.y < 0) this.y = H;
+    //     this.rotation += this.spin;
+    //   }
+    //   draw() {
+    //     this.el.setAttribute("stroke", rndColor(0.7));
+    //     //rndColor(0.7);rndColorC(0.5, 240, 230, 140)
+    //     const { x, y, size, rotation, type } = this;
+    //     let d = "";
+    //     if (type === "box") {
+    //       const cos = Math.cos(rotation),
+    //         sin = Math.sin(rotation);
+    //       const corners = [
+    //         [-1, -1],
+    //         [1, -1],
+    //         [1, 1],
+    //         [-1, 1],
+    //       ].map(([cx, cy]) => [
+    //         x + (cx * size * cos - cy * size * sin),
+    //         y + (cx * size * sin + cy * size * cos),
+    //       ]);
+    //       d =
+    //         corners
+    //           .map(
+    //             (p, i) =>
+    //               (i ? "L" : "M") + p[0].toFixed(2) + " " + p[1].toFixed(2),
+    //           )
+    //           .join("") + "Z";
+    //     } else if (type === "hexagon") {
+    //       for (let i = 0; i < 6; i++) {
+    //         const a = rotation + (i * Math.PI) / 3;
+    //         d +=
+    //           (i ? "L" : "M") +
+    //           (x + size * Math.cos(a)).toFixed(2) +
+    //           " " +
+    //           (y + size * Math.sin(a)).toFixed(2);
+    //       }
+    //       d += "Z";
+    //     } else {
+    //       for (let i = 0; i < 10; i++) {
+    //         const a = rotation + (i * Math.PI) / 5;
+    //         const r = i % 2 === 0 ? size : size / 2;
+    //         d +=
+    //           (i ? "L" : "M") +
+    //           (x + r * Math.cos(a)).toFixed(2) +
+    //           " " +
+    //           (y + r * Math.sin(a)).toFixed(2);
+    //       }
+    //       d += "Z";
+    //     }
+    //     this.el.setAttribute("d", d);
+    //   }
+    // }
+
+    // const init = () => {
+    //   particlesG.innerHTML = "";
+    //   shapesG.innerHTML = "";
+    //   particles = [];
+    //   shapes = [];
+    //   for (let i = 0; i < defaultParticles; i++) particles.push(new Particle());
+    //   for (let i = 0; i < defaultFrequency; i++)
+    //     shapes.push(new SpecialShape("box"));
+    //   for (let i = 0; i < defaultFrequency; i++)
+    //     shapes.push(new SpecialShape("star"));
+    //   for (let i = 0; i < defaultFrequency; i++)
+    //     shapes.push(new SpecialShape("hexagon"));
+    // };
 
     class SpecialShape {
       constructor(type) {
@@ -135,15 +239,48 @@ const InteractiveBackground = ({
         this.vy = rnd(-0.3, 0.3);
         this.rotation = 0;
         this.spin = rnd(0, 0.02);
-        this.el = document.createElementNS(svgNS, "path");
-        this.el.setAttribute("fill", "none");
-        this.el.setAttribute("stroke-width", "1");
+        this.el = document.createElementNS(svgNS, "g"); // using group for planets
         shapesG.appendChild(this.el);
+
+        if (type === "planet" || type === "ringed") {
+          // Planet Body
+          this.planet = document.createElementNS(svgNS, "circle");
+          this.planet.setAttribute(
+            "fill",
+            rndColorC(
+              0.85,
+              rndInt(90, 255),
+              rndInt(130, 255),
+              rndInt(170, 255),
+            ),
+          );
+          this.planet.setAttribute("fill", "rgba(240, 230, 140, .5)");
+          this.planet.setAttribute("fill", "rgba(255, 255, 255, .5)");
+          this.planet.setAttribute("stroke", "rgba(255,255,255,0.3)");
+          this.planet.setAttribute("stroke-width", "0.7");
+          this.el.appendChild(this.planet);
+
+          if (type === "ringed") {
+            this.ring = document.createElementNS(svgNS, "ellipse");
+            this.ring.setAttribute("fill", "none");
+            this.ring.setAttribute("stroke", "rgba(255,255,255,0.35)");
+            this.ring.setAttribute("stroke-width", "1.1");
+            this.el.appendChild(this.ring);
+          }
+        } else {
+          // Original shapes (box, star, hexagon) - unchanged
+          this.el = document.createElementNS(svgNS, "path");
+          this.el.setAttribute("fill", "none");
+          this.el.setAttribute("stroke-width", "1");
+          shapesG.appendChild(this.el); // re-append because we overwrote it
+        }
       }
+
       update() {
         const dx = core.x - this.x,
           dy = core.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
+
         if (mouse.visible && mouse.x !== null && dist < core.glowSize) {
           this.x += dx * 0.015;
           this.y += dy * 0.015;
@@ -151,58 +288,83 @@ const InteractiveBackground = ({
           this.x += this.vx;
           this.y += this.vy;
         }
+
         if (this.x > W) this.x = 0;
         if (this.x < 0) this.x = W;
         if (this.y > H) this.y = 0;
         if (this.y < 0) this.y = H;
+
         this.rotation += this.spin;
       }
+
       draw() {
-        this.el.setAttribute("stroke", rndColor(0.7));
         const { x, y, size, rotation, type } = this;
-        let d = "";
-        if (type === "box") {
-          const cos = Math.cos(rotation),
-            sin = Math.sin(rotation);
-          const corners = [
-            [-1, -1],
-            [1, -1],
-            [1, 1],
-            [-1, 1],
-          ].map(([cx, cy]) => [
-            x + (cx * size * cos - cy * size * sin),
-            y + (cx * size * sin + cy * size * cos),
-          ]);
-          d =
-            corners
-              .map(
-                (p, i) =>
-                  (i ? "L" : "M") + p[0].toFixed(2) + " " + p[1].toFixed(2),
-              )
-              .join("") + "Z";
-        } else if (type === "hexagon") {
-          for (let i = 0; i < 6; i++) {
-            const a = rotation + (i * Math.PI) / 3;
-            d +=
-              (i ? "L" : "M") +
-              (x + size * Math.cos(a)).toFixed(2) +
-              " " +
-              (y + size * Math.sin(a)).toFixed(2);
+
+        if (type === "planet" || type === "ringed") {
+          // Draw Planet
+          this.planet.setAttribute("cx", x);
+          this.planet.setAttribute("cy", y);
+          this.planet.setAttribute("r", size);
+
+          if (type === "ringed" && this.ring) {
+            this.ring.setAttribute("cx", x);
+            this.ring.setAttribute("cy", y);
+            this.ring.setAttribute("rx", size * 1.9);
+            this.ring.setAttribute("ry", size * 0.38);
+            this.ring.setAttribute(
+              "transform",
+              `rotate(${rotation * 40} ${x} ${y})`,
+            );
           }
-          d += "Z";
         } else {
-          for (let i = 0; i < 10; i++) {
-            const a = rotation + (i * Math.PI) / 5;
-            const r = i % 2 === 0 ? size : size / 2;
-            d +=
-              (i ? "L" : "M") +
-              (x + r * Math.cos(a)).toFixed(2) +
-              " " +
-              (y + r * Math.sin(a)).toFixed(2);
+          // Original shapes drawing logic (unchanged)
+          this.el.setAttribute("stroke", rndColor(0.7));
+          let d = "";
+
+          if (type === "box") {
+            const cos = Math.cos(rotation),
+              sin = Math.sin(rotation);
+            const corners = [
+              [-1, -1],
+              [1, -1],
+              [1, 1],
+              [-1, 1],
+            ].map(([cx, cy]) => [
+              x + (cx * size * cos - cy * size * sin),
+              y + (cx * size * sin + cy * size * cos),
+            ]);
+            d =
+              corners
+                .map(
+                  (p, i) =>
+                    (i ? "L" : "M") + p[0].toFixed(2) + " " + p[1].toFixed(2),
+                )
+                .join("") + "Z";
+          } else if (type === "hexagon") {
+            for (let i = 0; i < 6; i++) {
+              const a = rotation + (i * Math.PI) / 3;
+              d +=
+                (i ? "L" : "M") +
+                (x + size * Math.cos(a)).toFixed(2) +
+                " " +
+                (y + size * Math.sin(a)).toFixed(2);
+            }
+            d += "Z";
+          } else {
+            // star
+            for (let i = 0; i < 10; i++) {
+              const a = rotation + (i * Math.PI) / 5;
+              const r = i % 2 === 0 ? size : size / 2;
+              d +=
+                (i ? "L" : "M") +
+                (x + r * Math.cos(a)).toFixed(2) +
+                " " +
+                (y + r * Math.sin(a)).toFixed(2);
+            }
+            d += "Z";
           }
-          d += "Z";
+          this.el.setAttribute("d", d);
         }
-        this.el.setAttribute("d", d);
       }
     }
 
@@ -211,17 +373,20 @@ const InteractiveBackground = ({
       shapesG.innerHTML = "";
       particles = [];
       shapes = [];
-      if (particlesBool) {
-        for (let i = 0; i < 400; i++) particles.push(new Particle());
-        for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("box"));
-        for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("star"));
-        for (let i = 0; i < 10; i++) shapes.push(new SpecialShape("hexagon"));
-      } else {
-        for (let i = 0; i < 150; i++) particles.push(new Particle());
-        for (let i = 0; i < 5; i++) shapes.push(new SpecialShape("box"));
-        for (let i = 0; i < 5; i++) shapes.push(new SpecialShape("star"));
-        for (let i = 0; i < 5; i++) shapes.push(new SpecialShape("hexagon"));
-      }
+
+      for (let i = 0; i < defaultParticles; i++) particles.push(new Particle());
+      for (let i = 0; i < defaultFrequency; i++)
+        shapes.push(new SpecialShape("box"));
+      for (let i = 0; i < defaultFrequency; i++)
+        shapes.push(new SpecialShape("star"));
+      for (let i = 0; i < defaultFrequency; i++)
+        shapes.push(new SpecialShape("hexagon"));
+
+      // New Planets - Equal number
+      for (let i = 0; i < planetCount; i++)
+        shapes.push(new SpecialShape("planet"));
+      for (let i = 0; i < ringedPlanetCount; i++)
+        shapes.push(new SpecialShape("ringed"));
     };
 
     const animate = () => {
@@ -329,7 +494,6 @@ const InteractiveBackground = ({
         parent.removeEventListener("touchmove", handleTouchMove);
         parent.removeEventListener("touchend", handleTouchEnd);
         parent.removeEventListener("touchcancel", handleTouchEnd);
-    
       }
       cancelAnimationFrame(animationFrameId);
       svg.innerHTML = "";

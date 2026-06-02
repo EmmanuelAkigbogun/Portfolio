@@ -1,0 +1,296 @@
+/* src/components/css/ArtWorksDisplay.css */
+.art-display-section {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  padding: 120px 24px;
+  display: flex;
+  justify-content: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Forces InteractiveBackground to sit perfectly on the bottom layer */
+.art-display-section > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Lifts all portfolio text and row elements cleanly over the canvas lines */
+.art-display-container {
+  max-width: 1200px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.art-display-header {
+  margin-bottom: 72px;
+  text-align: left;
+}
+
+.art-display-badge {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.art-display-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.art-display-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.art-display-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 96px;
+}
+
+.art-display-row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.art-display-row.reversed {
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+.art-display-row.reversed .art-display-media-frame { order: 2; }
+.art-display-row.reversed .art-display-details-frame { order: 1; }
+
+.art-display-media-frame {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+  transition: var(--transition);
+  position: relative;
+}
+
+.art-display-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: crisp-edges;
+  transition: var(--transition);
+}
+
+.art-display-row:hover .art-display-img {
+  transform: scale(1.02);
+}
+
+.art-display-row:hover .art-display-media-frame {
+  border-color: var(--accent-color);
+}
+
+.medium-badge-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  z-index: 3;
+  pointer-events: none;
+  transition: var(--transition);
+}
+
+:root.white .medium-badge-overlay {
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #1d1d1f;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.art-display-row:hover .medium-badge-overlay {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.art-display-details-frame {
+  display: flex;
+  flex-direction: column;
+}
+
+.art-display-meta-top {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.art-display-medium {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.editable-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.art-display-heading {
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.art-display-body {
+  color: var(--text-muted);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.edit-glyph-indicator {
+  opacity: 0;
+  font-size: 0.95rem;
+  transition: opacity 0.2s ease;
+}
+
+.editable-wrapper:hover .edit-glyph-indicator {
+  opacity: 0.6;
+}
+
+.inline-title-input {
+  width: 100%;
+  background: var(--bg-sidebar);
+  color: var(--text-main);
+  border: 1px solid var(--accent-color);
+  border-radius: 8px;
+  font-size: 2.2rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 4px 12px;
+  outline: none;
+}
+
+.inline-desc-textarea {
+  width: 100%;
+  height: 90px;
+  background: var(--bg-sidebar);
+  color: var(--text-main);
+  border: 1px solid var(--accent-color);
+  border-radius: 8px;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  font-family: inherit;
+  padding: 8px 12px;
+  outline: none;
+  resize: none;
+}
+
+.art-display-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: var(--transition);
+  margin-top: 12px;
+}
+
+.art-display-row:hover .art-display-action-btn {
+  color: var(--accent-color);
+}
+
+.action-arrow-glyph {
+  transition: var(--transition);
+}
+
+.art-display-row:hover .action-arrow-glyph {
+  transform: translateX(6px);
+}
+
+.gallery-see-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-see-more {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--border-color);
+  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.btn-see-more:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-color);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-arrow {
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 968px) {
+  .art-display-row, .art-display-row.reversed {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .art-display-row.reversed .art-display-media-frame,
+  .art-display-row.reversed .art-display-details-frame {
+    order: unset;
+  }
+  .art-display-heading { font-size: 1.8rem; }
+  .inline-title-input { font-size: 1.8rem; }
+}
