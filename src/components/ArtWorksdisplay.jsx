@@ -4,7 +4,7 @@ import "./css/ArtWorksDisplay.css";
 import "./css/Hero.css";
 import InteractiveBackground from "./InteractiveBackground";
 import ArtWorksDisplayStack from "./ArtWorksDisplayStack";
-import ArtWorksDisplayHeader from "./ArtWorksdisplayHeader";
+import ArtWorksDisplayHeader from "./ArtWorksDisplayHeader";
 
 const largeArtMatrix = [
   {
