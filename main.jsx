@@ -5,13 +5,13 @@ import "./variables.css";
 import Hero from "./components/Hero";
 import CelebrateSection from "./components/FireWork/CelebrateSection";
 import ThemeToggle from "./components/ThemeToggle";
-import ArtWorksDisplay from "./components/ArtWorksdisplay";
+import ArtWorksDisplay from "./components/ArtWorksDisplay";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <>
     <Navbar />
     <Hero />
     <ThemeToggle />
     <CelebrateSection />
-    <ArtWorksDisplay/>
+    <ArtWorksDisplay />
   </>,
 );
