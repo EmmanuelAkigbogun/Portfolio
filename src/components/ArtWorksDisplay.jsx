@@ -73,7 +73,7 @@ const largeArtMatrix = [
   {
     id: 8,
     src: "https://akigbogun.vercel.app/",
-    mediaType: "image",
+    mediaType: "embed",
     mediumType: "Traditional Ink",
     title: "Tactile Cross-Hatch 03",
     specifications: "BIRO ON 300GSM PAPER",
