@@ -47,12 +47,12 @@ const largeArtMatrix = [
   },
     {
     id: 5,
-    src: Images.draw3p,
+    src: Images.draw1p,
     mediaType: "image",
-    mediumType: "Digital Art",
-    title: "Algorithmic Fluidity 02",
-    specifications: "GENERATIVE CANVAS",
-    desc: "Exploring procedural node loops under custom matrix engines.",
+    mediumType: "Traditional Ink",
+    title: "Tactile Cross-Hatch 02",
+    specifications: "BIRO ON 300GSM PAPER",
+    desc: "Layered point pressure studies forming organic structures.",
   },
   {
     id: 6,
@@ -63,14 +63,15 @@ const largeArtMatrix = [
     specifications: "BIRO ON 300GSM PAPER",
     desc: "Fine pen hatching forming rhythmic lines across smooth paper panels.",
   },
-    {
+
+      {
     id: 7,
-    src: Images.draw1p,
+    src: Images.draw3p,
     mediaType: "image",
-    mediumType: "Traditional Ink",
-    title: "Tactile Cross-Hatch 02",
-    specifications: "BIRO ON 300GSM PAPER",
-    desc: "Layered point pressure studies forming organic structures.",
+    mediumType: "Digital Art",
+    title: "Algorithmic Fluidity 02",
+    specifications: "GENERATIVE CANVAS",
+    desc: "Exploring procedural node loops under custom matrix engines.",
   },
 ];
 
