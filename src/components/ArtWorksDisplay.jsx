@@ -34,16 +34,18 @@ const largeArtMatrix = [
     specifications: "RAW MACRO CAPTURE",
     desc: "Utilizing environmental exposures to capture real-world micro textures.",
   },
+
+
   {
     id: 4,
-    src: Images.draw1p,
+    src: Images.draw5j,
     mediaType: "image",
-    mediumType: "Traditional Ink",
-    title: "Tactile Cross-Hatch 02",
-    specifications: "BIRO ON 300GSM PAPER",
-    desc: "Layered point pressure studies forming organic structures.",
+    mediumType: "Photography",
+    title: "Chroma Exposure",
+    specifications: "REFRACTED LIGHT PRISM",
+    desc: "Capturing high-density color rays on light-sensitive films.",
   },
-  {
+    {
     id: 5,
     src: Images.draw3p,
     mediaType: "image",
@@ -54,15 +56,6 @@ const largeArtMatrix = [
   },
   {
     id: 6,
-    src: Images.draw5j,
-    mediaType: "image",
-    mediumType: "Photography",
-    title: "Chroma Exposure",
-    specifications: "REFRACTED LIGHT PRISM",
-    desc: "Capturing high-density color rays on light-sensitive films.",
-  },
-  {
-    id: 7,
     src: Images.draw11j,
     mediaType: "image",
     mediumType: "Traditional Ink",
@@ -70,14 +63,14 @@ const largeArtMatrix = [
     specifications: "BIRO ON 300GSM PAPER",
     desc: "Fine pen hatching forming rhythmic lines across smooth paper panels.",
   },
-  {
-    id: 8,
-    src: "https://akigbogun.vercel.app/",
-    mediaType: "embed",
+    {
+    id: 7,
+    src: Images.draw1p,
+    mediaType: "image",
     mediumType: "Traditional Ink",
-    title: "Tactile Cross-Hatch 03",
+    title: "Tactile Cross-Hatch 02",
     specifications: "BIRO ON 300GSM PAPER",
-    desc: "Fine pen hatching forming rhythmic lines across smooth paper panels.",
+    desc: "Layered point pressure studies forming organic structures.",
   },
 ];
 
