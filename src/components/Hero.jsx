@@ -12,7 +12,7 @@ const Hero = () => {
       {/* Our new canvas component */}
       <InteractiveBackground
         defaultFrequency={8}
-        defaultParticles={200}
+        defaultParticles={150}
         planetCount={2}
         ringedPlanetCount={5}
       />
