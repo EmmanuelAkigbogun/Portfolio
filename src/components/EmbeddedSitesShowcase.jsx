@@ -22,7 +22,7 @@ const embedProjects = [
     tech: "React Three Fiber • Stripe • Framer Motion",
   },
   {
-    id: 2,
+    id: 3,
     title: "Aether Commerce",
     desc: "Immersive 3D e-commerce platform with spatial product exploration.",
     //url: "https://luxerous-hairs.vercel.app/Account",
@@ -32,7 +32,7 @@ const embedProjects = [
     tech: "React Three Fiber • Stripe • Framer Motion",
   },
   {
-    id: 3,
+    id: 4,
     title: "Charts in Motion",
     desc: "Dark web-style portfolio & experimental digital garden.",
     url: "https://chart-lilac.vercel.app",

@@ -9,8 +9,8 @@ const Navbar = () => {
     <nav className="navbar">
       <InteractiveBackground
         booleanConst={false}
-        defaultFrequency={5}
-        defaultParticles={150}
+        defaultFrequency={3}
+        defaultParticles={50}
         planetCount={2}
         ringedPlanetCount={5}
       />
@@ -25,8 +25,8 @@ const Navbar = () => {
           <ul className="nav-links-mobile" onClick={(e) => e.stopPropagation()}>
             <InteractiveBackground
               booleanConst={false}
-              defaultFrequency={4}
-              defaultParticles={100}
+              defaultFrequency={8}
+              defaultParticles={80}
               planetCount={2}
               ringedPlanetCount={5}
             />
