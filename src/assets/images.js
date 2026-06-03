@@ -11,13 +11,13 @@ import draw1j from "./draw (1).jpg";
 import draw2j from "./draw (2).jpg";
 import draw3p from "./draw (3).png";
 import draw3j from "./draw (3).jpg";
-// import draw4p from "./draw (4).png";
+import draw4p from "./draw (4).png";
 import draw4j from "./draw (4).jpg";
-// import draw5p from "./draw (5).png";
+import draw5p from "./draw (5).png";
 import draw5j from "./draw (5).jpg";
-// import draw6p from "./draw (6).png";
+import draw6p from "./draw (6).png";
 import draw6j from "./draw (6).jpg";
-// import draw7p from "./draw (7).png";
+import draw7p from "./draw (7).png";
 import draw7j from "./draw (7).jpg";
 // import draw8p from "./draw (8).png";
 import draw8j from "./draw (8).jpg";
@@ -38,13 +38,13 @@ export const Images = {
   draw2j,
   draw3p,
   draw3j,
-  // draw4p,
+  draw4p,
   draw4j,
-  // draw5p,
+  draw5p,
   draw5j,
-  // draw6p,
+  draw6p,
   draw6j,
-  // draw7p,
+  draw7p,
   draw7j,
   // draw8p,
   draw8j,
