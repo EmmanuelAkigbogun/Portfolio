@@ -30,3 +30,10 @@
 /* Specific Positions */
 .btn-pos-left { left: 32px; }
 .btn-pos-right { right: 32px; }
+
+/* Hide on screens smaller than 768px */
+@media (max-width: 767px) {
+  .hidden {
+    display: none !important;
+  }
+}
