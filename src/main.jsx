@@ -12,8 +12,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Navbar />
     <Hero />
     <ThemeToggle />
-    <CelebrateSection />
+    <div className="hidden">
+      <CelebrateSection />
+    </div>
+
+    <EmbeddedSitesShowcase />
     <ArtWorksDisplay />
-    <EmbeddedSitesShowcase/>
   </>,
 );
