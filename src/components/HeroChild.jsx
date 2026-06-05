@@ -2,10 +2,10 @@ function HeroChild() {
     return (
       <div className="hero-container">
         <div className="hero-content">
-          <span className="hero-badge">Digital Artisan & Developer</span>
+          <span>Digital Artisan & Developer</span>
           <h1 className="hero-title">
             Artistry & Code <br />
-            <span className="lens-text">Built with Intention.</span>
+            <span>Built with Intention.</span>
           </h1>
           <p className="hero-subtitle">
             Merging high-end development with digital artistry and a love for

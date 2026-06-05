@@ -26,7 +26,7 @@ const embedProjects = [
     title: "Aether Commerce",
     desc: "Immersive 3D e-commerce platform with spatial product exploration.",
     //url: "https://luxerous-hairs.vercel.app/Account",
-      url: "https://luxerous-hairs.vercel.app/Shop%20Our%20Bundles/Recent%20Products/Product%20Name_Page/1@@Static@This%20is%20the%20name%20of%20the%20product%202",
+    url: "https://luxerous-hairs.vercel.app/Shop%20Our%20Bundles/Recent%20Products/Product%20Name_Page/1@@Static@This%20is%20the%20name%20of%20the%20product%202",
     // preview: "https://picsum.photos/id/201/800/600",
     preview: Images.draw6p,
     tech: "React Three Fiber • Stripe • Framer Motion",
@@ -38,6 +38,24 @@ const embedProjects = [
     url: "https://chart-lilac.vercel.app",
     // preview: "https://picsum.photos/id/237/800/600",
     preview: Images.draw7p,
+    tech: "Next.js • GSAP • Shader Art",
+  },
+  {
+    id: 5,
+    title: "Solar Fireworks",
+    desc: "Dark web-style portfolio & experimental digital garden.",
+    url: "https://background-eta.vercel.app/",
+    // preview: "https://picsum.photos/id/237/800/600",
+    preview: Images.draw4p,
+    tech: "Next.js • GSAP • Shader Art",
+  },
+  {
+    id: 6,
+    title: "Packing Panic",
+    desc: "Dark web-style portfolio & experimental digital garden.",
+    url: "https://emmanuelakigbogun.github.io/packingpanic",
+    // preview: "https://picsum.photos/id/237/800/600",
+    preview: Images.drawj,
     tech: "Next.js • GSAP • Shader Art",
   },
 ];
@@ -108,7 +126,12 @@ const EmbeddedSitesShowcase = ({ isAdmin = false }) => {
           </div>
         </div>
       )}
-      <InteractiveBackground/>
+      <InteractiveBackground
+        defaultFrequency={8}
+        defaultParticles={150}
+        planetCount={2}
+        ringedPlanetCount={10}
+      />
     </section>
   );
 };

@@ -14,7 +14,7 @@ const Hero = () => {
         defaultFrequency={8}
         defaultParticles={150}
         planetCount={2}
-        ringedPlanetCount={5}
+        ringedPlanetCount={8}
       />
       <HeroChild />
     </section>

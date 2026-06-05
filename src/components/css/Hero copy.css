@@ -19,30 +19,13 @@
   opacity: 0.4;
 }
 
-/* Flex layout added here so it accurately controls your React entry div */
 .hero-container {
   z-index: 10;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 40px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
 }
-
-/* Stacks your typography, badge, and actions cleanly */
-.hero-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-   /* --- New --- */
-   align-items: center;
-  /* --- New --- */
-  width: 100%;
-}
-
 
 .hero-title {
   font-size: 5.5rem;
@@ -52,18 +35,10 @@
   margin-bottom: 30px;
   /* Pointing to Root Text */
   color: var(--text-main);
-   /* --- New --- */
-  text-align: center;
-   /* --- New --- */
 }
 
 .hero-title span {
   /* Using the Accent Gold for specific words */
-  color: var(--accent-color);
-}
-
-/* Added explicit target for your component's class variant */
-.hero-title .lens-text {
   color: var(--accent-color);
 }
 
@@ -73,9 +48,6 @@
   max-width: 600px;
   margin-bottom: 40px;
   line-height: 1.6;
-   /* --- New --- */
-   text-align: center;
-    /* --- New --- */
 }
 
 /* CHUNKY, STYLED BUTTONS */
@@ -134,7 +106,6 @@
   .hero-actions {
     flex-direction: column;
     gap: 15px;
-    width: 100%;
   }
   .btn-hero-primary,
   .btn-hero-secondary {
@@ -142,3 +113,4 @@
     text-align: center;
   }
 }
+

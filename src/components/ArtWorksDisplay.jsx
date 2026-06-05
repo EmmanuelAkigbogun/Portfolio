@@ -35,7 +35,6 @@ const largeArtMatrix = [
     desc: "Utilizing environmental exposures to capture real-world micro textures.",
   },
 
-
   {
     id: 4,
     src: Images.draw5j,
@@ -45,7 +44,7 @@ const largeArtMatrix = [
     specifications: "REFRACTED LIGHT PRISM",
     desc: "Capturing high-density color rays on light-sensitive films.",
   },
-    {
+  {
     id: 5,
     src: Images.draw1p,
     mediaType: "image",
@@ -64,7 +63,7 @@ const largeArtMatrix = [
     desc: "Fine pen hatching forming rhythmic lines across smooth paper panels.",
   },
 
-      {
+  {
     id: 7,
     src: Images.draw3p,
     mediaType: "image",

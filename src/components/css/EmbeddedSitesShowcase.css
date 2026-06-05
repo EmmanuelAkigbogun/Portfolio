@@ -2,7 +2,7 @@
 .embeds-section {
   background: var(--bg-main);
   color: var(--text-main);
-  padding: 140px 24px 100px;
+  padding: 64px 24px 64px;
   position: relative;
   overflow: hidden;
 }
@@ -43,8 +43,8 @@
 /* Grid */
 .embeds-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 150px;
 }
 
 /* Card */
