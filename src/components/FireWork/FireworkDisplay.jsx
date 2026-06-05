@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 const FireworkDisplay = ({
   trigger = 0,
-  texts = ["Δαρk"], //["Δαρk", "WELCOME", "Zephyr Δ"],
-  shapes = ["heart", "star"],
+  texts = [], //["Δαρk", "WELCOME", "Zephyr Δ"],
+  shapes = [],
   images = [],
   navHeightVal = 120,
 }) => {
@@ -645,7 +645,7 @@ const FireworkDisplay = ({
         "fractal",
         "butterfly",
         "tiny-stars",
-        "spiral",
+        // "spiral",
         "classic",
         "waves",
         "starfish",
@@ -653,7 +653,7 @@ const FireworkDisplay = ({
         // "love",
         // "sin",
         //"firstfire",
-        "bird",
+        // "bird",
         "fractals",
         "phoenix",
         "waves",
