@@ -3,7 +3,7 @@
 // --- Core Layout Assets ---
 import heroMockup from "./dark.png";
 import livehocky from "./draw.png";
-
+import drawj from "./draw.jpg";
 // --- Base Pattern Assets (1 to 13) ---
 import draw1p from "./draw (1).png";
 import draw1j from "./draw (1).jpg";
@@ -30,7 +30,7 @@ import draw11j from "./draw (11).jpg";
 export const Images = {
   hero: heroMockup,
   draw: livehocky,
-
+  drawj: drawj,
   // Pattern Iteration Array Mappings
   draw1p,
   draw1j,
