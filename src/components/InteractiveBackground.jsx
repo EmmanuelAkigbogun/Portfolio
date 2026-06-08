@@ -5,7 +5,10 @@ const InteractiveBackground = ({
   defaultFrequency = 15,
   defaultParticles = 400,
   planetCount = 4,
-  ringedPlanetCount = 16,
+  ringedPlanetCount = 15,
+  speedMultiplier = 1.5, // Overall speed of particles & planets 1
+  coreFollowSpeed = 0.06, // How fast the central sphere follows mouse  0.05
+  attractionStrength = 0.03, // Strength of attraction toward the sphere  0.015
 }) => {
   const svgRef = useRef(null);
 
@@ -14,6 +17,7 @@ const InteractiveBackground = ({
     const parent = svg.parentElement;
     const svgNS = "http://www.w3.org/2000/svg";
 
+    // === Defs & Gradients ===
     const defs = document.createElementNS(svgNS, "defs");
 
     const grad = document.createElementNS(svgNS, "radialGradient");
@@ -49,6 +53,7 @@ const InteractiveBackground = ({
 
     svg.appendChild(defs);
 
+    // Core elements
     const coreGlow = document.createElementNS(svgNS, "circle");
     coreGlow.setAttribute("fill", "url(#ib-core-grad)");
     coreGlow.setAttribute("opacity", "0");
@@ -107,20 +112,22 @@ const InteractiveBackground = ({
         particlesG.appendChild(this.el);
         this.x = Math.random() * W;
         this.y = Math.random() * H;
-        this.vx = rnd(-0.3, 0.3);
-        this.vy = rnd(-0.3, 0.3);
+        this.vx = rnd(-0.3, 0.3) * speedMultiplier;
+        this.vy = rnd(-0.3, 0.3) * speedMultiplier;
       }
       update() {
-        const dx = core.x - this.x,
-          dy = core.y - this.y;
+        const dx = core.x - this.x;
+        const dy = core.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
+
         if (mouse.visible && mouse.x !== null && dist < core.glowSize) {
-          this.x += dx * 0.015;
-          this.y += dy * 0.015;
+          this.x += dx * attractionStrength;
+          this.y += dy * attractionStrength;
         } else {
           this.x += this.vx;
           this.y += this.vy;
         }
+
         if (this.x > W) this.x = 0;
         if (this.x < 0) this.x = W;
         if (this.y > H) this.y = 0;
@@ -133,118 +140,24 @@ const InteractiveBackground = ({
       }
     }
 
-    // class SpecialShape {
-    //   constructor(type) {
-    //     this.type = type;
-    //     this.x = Math.random() * W;
-    //     this.y = Math.random() * H;
-    //     this.size = rnd(3, 7);
-    //     this.vx = rnd(-0.3, 0.3);
-    //     this.vy = rnd(-0.3, 0.3);
-    //     this.rotation = 0;
-    //     this.spin = rnd(0, 0.02);
-    //     this.el = document.createElementNS(svgNS, "path");
-    //     this.el.setAttribute("fill", "none");
-    //     this.el.setAttribute("stroke-width", "1");
-    //     shapesG.appendChild(this.el);
-    //   }
-    //   update() {
-    //     const dx = core.x - this.x,
-    //       dy = core.y - this.y;
-    //     const dist = Math.sqrt(dx * dx + dy * dy);
-    //     if (mouse.visible && mouse.x !== null && dist < core.glowSize) {
-    //       this.x += dx * 0.015;
-    //       this.y += dy * 0.015;
-    //     } else {
-    //       this.x += this.vx;
-    //       this.y += this.vy;
-    //     }
-    //     if (this.x > W) this.x = 0;
-    //     if (this.x < 0) this.x = W;
-    //     if (this.y > H) this.y = 0;
-    //     if (this.y < 0) this.y = H;
-    //     this.rotation += this.spin;
-    //   }
-    //   draw() {
-    //     this.el.setAttribute("stroke", rndColor(0.7));
-    //     //rndColor(0.7);rndColorC(0.5, 240, 230, 140)
-    //     const { x, y, size, rotation, type } = this;
-    //     let d = "";
-    //     if (type === "box") {
-    //       const cos = Math.cos(rotation),
-    //         sin = Math.sin(rotation);
-    //       const corners = [
-    //         [-1, -1],
-    //         [1, -1],
-    //         [1, 1],
-    //         [-1, 1],
-    //       ].map(([cx, cy]) => [
-    //         x + (cx * size * cos - cy * size * sin),
-    //         y + (cx * size * sin + cy * size * cos),
-    //       ]);
-    //       d =
-    //         corners
-    //           .map(
-    //             (p, i) =>
-    //               (i ? "L" : "M") + p[0].toFixed(2) + " " + p[1].toFixed(2),
-    //           )
-    //           .join("") + "Z";
-    //     } else if (type === "hexagon") {
-    //       for (let i = 0; i < 6; i++) {
-    //         const a = rotation + (i * Math.PI) / 3;
-    //         d +=
-    //           (i ? "L" : "M") +
-    //           (x + size * Math.cos(a)).toFixed(2) +
-    //           " " +
-    //           (y + size * Math.sin(a)).toFixed(2);
-    //       }
-    //       d += "Z";
-    //     } else {
-    //       for (let i = 0; i < 10; i++) {
-    //         const a = rotation + (i * Math.PI) / 5;
-    //         const r = i % 2 === 0 ? size : size / 2;
-    //         d +=
-    //           (i ? "L" : "M") +
-    //           (x + r * Math.cos(a)).toFixed(2) +
-    //           " " +
-    //           (y + r * Math.sin(a)).toFixed(2);
-    //       }
-    //       d += "Z";
-    //     }
-    //     this.el.setAttribute("d", d);
-    //   }
-    // }
-
-    // const init = () => {
-    //   particlesG.innerHTML = "";
-    //   shapesG.innerHTML = "";
-    //   particles = [];
-    //   shapes = [];
-    //   for (let i = 0; i < defaultParticles; i++) particles.push(new Particle());
-    //   for (let i = 0; i < defaultFrequency; i++)
-    //     shapes.push(new SpecialShape("box"));
-    //   for (let i = 0; i < defaultFrequency; i++)
-    //     shapes.push(new SpecialShape("star"));
-    //   for (let i = 0; i < defaultFrequency; i++)
-    //     shapes.push(new SpecialShape("hexagon"));
-    // };
-
     class SpecialShape {
       constructor(type) {
         this.type = type;
         this.x = Math.random() * W;
         this.y = Math.random() * H;
         this.size = rnd(3, 7);
-        this.vx = rnd(-0.3, 0.3);
-        this.vy = rnd(-0.3, 0.3);
+        this.vx = rnd(-0.3, 0.3) * speedMultiplier;
+        this.vy = rnd(-0.3, 0.3) * speedMultiplier;
         this.rotation = 0;
-        this.spin = rnd(0, 0.02);
-        this.el = document.createElementNS(svgNS, "g"); // using group for planets
+        this.spin = rnd(0, 0.02) * speedMultiplier;
+
+        this.el = document.createElementNS(svgNS, "g");
         shapesG.appendChild(this.el);
 
         if (type === "planet" || type === "ringed") {
-          // Planet Body
           this.planet = document.createElementNS(svgNS, "circle");
+          this.planet.setAttribute("fill", "rgba(240, 230, 140, .5)");
+          this.planet.setAttribute("fill", "rgba(255, 255, 255, .5)");
           this.planet.setAttribute(
             "fill",
             rndColorC(
@@ -254,8 +167,6 @@ const InteractiveBackground = ({
               rndInt(170, 255),
             ),
           );
-          this.planet.setAttribute("fill", "rgba(240, 230, 140, .5)");
-          this.planet.setAttribute("fill", "rgba(255, 255, 255, .5)");
           this.planet.setAttribute("stroke", "rgba(255,255,255,0.3)");
           this.planet.setAttribute("stroke-width", "0.7");
           this.el.appendChild(this.planet);
@@ -268,22 +179,21 @@ const InteractiveBackground = ({
             this.el.appendChild(this.ring);
           }
         } else {
-          // Original shapes (box, star, hexagon) - unchanged
           this.el = document.createElementNS(svgNS, "path");
           this.el.setAttribute("fill", "none");
           this.el.setAttribute("stroke-width", "1");
-          shapesG.appendChild(this.el); // re-append because we overwrote it
+          shapesG.appendChild(this.el);
         }
       }
 
       update() {
-        const dx = core.x - this.x,
-          dy = core.y - this.y;
+        const dx = core.x - this.x;
+        const dy = core.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (mouse.visible && mouse.x !== null && dist < core.glowSize) {
-          this.x += dx * 0.015;
-          this.y += dy * 0.015;
+          this.x += dx * attractionStrength;
+          this.y += dy * attractionStrength;
         } else {
           this.x += this.vx;
           this.y += this.vy;
@@ -301,7 +211,6 @@ const InteractiveBackground = ({
         const { x, y, size, rotation, type } = this;
 
         if (type === "planet" || type === "ringed") {
-          // Draw Planet
           this.planet.setAttribute("cx", x);
           this.planet.setAttribute("cy", y);
           this.planet.setAttribute("r", size);
@@ -317,7 +226,6 @@ const InteractiveBackground = ({
             );
           }
         } else {
-          // Original shapes drawing logic (unchanged)
           this.el.setAttribute("stroke", rndColor(0.7));
           let d = "";
 
@@ -382,7 +290,6 @@ const InteractiveBackground = ({
       for (let i = 0; i < defaultFrequency; i++)
         shapes.push(new SpecialShape("hexagon"));
 
-      // New Planets - Equal number
       for (let i = 0; i < planetCount; i++)
         shapes.push(new SpecialShape("planet"));
       for (let i = 0; i < ringedPlanetCount; i++)
@@ -391,18 +298,11 @@ const InteractiveBackground = ({
 
     const animate = () => {
       if (mouse.x != null && mouse.y != null) {
-        core.x += (mouse.x - core.x) * 0.05;
-        core.y += (mouse.y - core.y) * 0.05;
+        core.x += (mouse.x - core.x) * coreFollowSpeed;
+        core.y += (mouse.y - core.y) * coreFollowSpeed;
       }
 
       if (mouse.visible) {
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-        // Bumped from 0.2 to 0.7 for vivid colour glow
-        // stop0.setAttribute("stop-color", `rgba(${r},${g},${b},0)`);
-        // stop1.setAttribute("stop-color", "rgba(0,0,0,0)");
-
         coreGlow.setAttribute("cx", core.x);
         coreGlow.setAttribute("cy", core.y);
         coreGlow.setAttribute("r", core.glowSize);
@@ -429,6 +329,7 @@ const InteractiveBackground = ({
         s.update();
         s.draw();
       });
+
       animationFrameId = requestAnimationFrame(animate);
     };
 
@@ -454,7 +355,6 @@ const InteractiveBackground = ({
     };
 
     const handleTouchMove = (e) => {
-      // no preventDefault here — allows scrolling
       const rect = parent.getBoundingClientRect();
       const t = e.touches[0];
       mouse.x = t.clientX - rect.left;
@@ -463,7 +363,6 @@ const InteractiveBackground = ({
     };
 
     const handleTouchEnd = () => {
-      console.log("TOUCH END FIRED");
       mouse.visible = false;
       mouse.x = null;
       mouse.y = null;
@@ -498,7 +397,7 @@ const InteractiveBackground = ({
       cancelAnimationFrame(animationFrameId);
       svg.innerHTML = "";
     };
-  }, []);
+  }, [speedMultiplier, coreFollowSpeed, attractionStrength]);
 
   return (
     <svg

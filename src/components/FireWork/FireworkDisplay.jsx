@@ -218,6 +218,26 @@ const FireworkDisplay = ({
             vy *= 0.5;
             break;
           }
+          case "tadepoles": {
+            // lissajous
+            vx = 14 * Math.sin(a * 10 + Math.PI / b);
+            vy = 14 * Math.sin(b * 10);
+            break;
+          }
+          case "boom": {
+            const r = (8 + 4) * Math.cos(mode * t);
+            switch (1) {
+              case 1: {
+                // lissajous
+                vx = 14 * Math.sin(a * t + Math.PI / b);
+                vy = 14 * Math.sin(b * t);
+                break;
+              }
+            }
+            vx *= 0.45;
+            vy *= 0.45;
+            break;
+          }
           case "flower": {
             const angleVal = (i / count) * Math.PI * 2;
             const ra = 15 * Math.cos(5 * angleVal);
@@ -641,23 +661,34 @@ const FireworkDisplay = ({
       const pool = [];
 
       // math shapes — always in the pool
+      // const mathTypes = [
+      //   "fractal",
+      //   "butterfly",
+      //   "tiny-stars",
+      //   // "spiral",
+      //   "classic",
+      //   "waves",
+      //   "starfish",
+      //   // "flower",
+      //   // "love",
+      //   // "sin",
+      //   //"firstfire",
+      //   // "bird",
+      //   "fractals",
+      //   "phoenix",
+      //   "waves",
+      //   "phoenixs",
+      // ];
       const mathTypes = [
+        "boom",
+        "waves",
         "fractal",
-        "butterfly",
-        "tiny-stars",
-        // "spiral",
-        "classic",
-        "waves",
-        "starfish",
-        // "flower",
-        // "love",
-        // "sin",
-        //"firstfire",
-        // "bird",
         "fractals",
+        "butterfly",
+        "tadepoles",
         "phoenix",
-        "waves",
-        "phoenixs",
+        "tiny-stars",
+        "classic"
       ];
       mathTypes.forEach((v) => pool.push({ kind: "math", value: v }));
 

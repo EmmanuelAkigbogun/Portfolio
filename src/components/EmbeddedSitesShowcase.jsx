@@ -127,10 +127,10 @@ const EmbeddedSitesShowcase = ({ isAdmin = false }) => {
         </div>
       )}
       <InteractiveBackground
-        defaultFrequency={8}
-        defaultParticles={150}
-        planetCount={2}
-        ringedPlanetCount={10}
+        defaultFrequency={10}
+        defaultParticles={200}
+        planetCount={4}
+        ringedPlanetCount={15}
       />
     </section>
   );

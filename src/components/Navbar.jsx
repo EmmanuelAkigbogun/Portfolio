@@ -11,7 +11,7 @@ const Navbar = () => {
         booleanConst={false}
         defaultFrequency={3}
         defaultParticles={50}
-        planetCount={2}
+        planetCount={1}
         ringedPlanetCount={5}
       />
       <div className="nav-container">
