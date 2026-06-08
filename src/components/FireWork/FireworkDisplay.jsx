@@ -688,7 +688,8 @@ const FireworkDisplay = ({
         "tadepoles",
         "phoenix",
         "tiny-stars",
-        "classic"
+        "classic",
+        "starfish",
       ];
       mathTypes.forEach((v) => pool.push({ kind: "math", value: v }));
 
